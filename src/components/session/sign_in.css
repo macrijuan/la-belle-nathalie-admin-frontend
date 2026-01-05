@@ -1,0 +1,67 @@
+.SignIn{
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.SignIn h1,
+.SignIn h3 {
+  border: solid 0.1em black;
+  border-radius: 1em;
+  padding: 0.37em;
+  background-color: white;
+}
+
+.SignIn h2{
+  margin: 0px;
+  border: solid 0.1em black;
+  border-radius: 1em;
+  padding: 0.37em;
+  background-color: white;
+}
+
+.SignIn form{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 1em;
+  padding: 1em;
+  padding-top: 0;
+  background-color: white;
+}
+
+.SignIn h5{
+  margin-bottom: 0.1em;
+}
+
+.SignIn p{
+  width: 100%;
+}
+
+
+.SignIn hr{
+  width: 75%;
+  border-bottom: none;
+  border-top: 0.1em solid black
+}
+
+.SignIn .submit{
+  display: block;
+  margin-top: 0.5em;
+  justify-self: center;
+}
+
+.SignIn .signup{
+  display: block;
+  justify-self: center;
+  margin-block: 1em;
+}

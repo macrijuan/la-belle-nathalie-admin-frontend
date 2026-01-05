@@ -1,0 +1,133 @@
+.AppoCalendar{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 2%;
+  overflow-y: auto;
+}
+.AppoCalendar h3{
+  width: fit-content;
+  background-color: rgba(255, 255, 255, 0.8);;
+}
+
+.AppoCalendar-topElements{
+  display: flex;
+  flex-direction: column;
+}
+.AppoCalendar-topElements h2{
+  width: fit-content;
+  background-color: rgba(255, 255, 255, 0.8);;
+}
+.AppoCalendar-topElements .header{
+  position: relative;
+  background-color: rgba( 213, 104, 252, 0.8 );
+}
+.AppoCalendar-topElements .header a{
+  position: absolute;
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+}
+.AppoCalendar-topElements .header h1{
+  text-align: center;
+  color: rgb(255, 255, 255);
+}
+
+.AppoCalendar-Close{
+  align-self: flex-end;
+}
+
+.AppoCalendar-EmployeList{
+  margin-left: 0.5rem;
+  display: inline-block;
+}
+
+.AppoCalendar-text{
+  width: fit-content;
+  background-color: rgb(255, 255, 255, 0.7);
+}
+.AppoCalendar-header{
+  width: 100%;
+}
+.AppoCalendar-header p{
+  width: 9.5%;
+  height: 20%;
+  margin: 1%;
+  padding: 1%;
+  display: inline-block;
+  text-align: center;
+  border: solid 0.2em rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255, 0.7);
+}
+
+.AppoCalendar-PrevMonthDays{
+  width: 9.5%;
+  height: 60%;
+  margin: 1%;
+  padding: 1%;
+  display: inline-block;
+  border: solid 0.2em rgb(187, 187, 187);
+  background-color: rgb(187, 187, 187);
+}
+
+.AppoCalendar-Day{
+  width: 9.5%;
+  height: 20%;
+  margin: 1%;
+  padding: 1%;
+  display: inline-block;
+  overflow: auto;
+  scrollbar-width: thin;
+  border: solid 0.2em rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255, 0.7);
+}
+
+.AppoCalendar-Day:hover{
+  border: solid 0.2em rgb(238, 130, 238);
+}
+
+.AppoCalendar-Day p {
+  margin: 0px;
+}
+
+.AppoCalendar-HourBox{
+  width: 100%;
+  margin-block: 0.25em;
+  font-size: larger;
+  overflow-x: hidden;
+}
+
+.AppoCalendar-HourBox:hover{
+  background: rgb(238, 130, 238);
+}
+
+.AppoCalendar-Error-Wrap{
+  z-index: 997;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba( 128, 128, 128, 0.7 );
+}
+
+.AppoCalendar-Error{
+  z-index: 998;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 1em;
+}
+
+.AppoCalendar-Error.close{
+  align-self: flex-end;
+}
+
+.AppoCalendar-Error.title{
+  margin-top: 0px;
+}

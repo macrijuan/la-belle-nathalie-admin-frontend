@@ -1,0 +1,85 @@
+.Account{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 2%;
+}
+
+
+.Account .header{
+  box-sizing: border-box;
+  position: relative;
+  background-color: rgba( 213, 104, 252, 0.8 );
+  padding: 0.5em;
+}
+.Account .header h1{
+  text-align: center;
+  color: rgb( 255, 255, 255 );
+}
+.Account .header a{
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+}
+
+.Account .main{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.Account .main h2{
+  align-self: center;
+  width: fit-content;
+  margin-bottom: 0px;
+  font-weight: lighter;
+  background-color: rgba( 255, 255, 255, 0.8 );
+}
+.Account .main hr {
+  width: 75%;
+  border: none;
+  border-top: 0.1em solid rgb(255, 255, 255);
+}
+.Account .main h3{
+  height: 100%;
+}
+
+
+
+.Account .main .top-div{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.Account .update-button{
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 1em;
+}
+
+
+
+.Account .email{
+  display: flex;
+  gap: 1rem;
+  white-space: nowrap;
+  align-items: center;
+}
+.Account .email h3{
+  margin-top: 0px;
+}
+
+.Account .delete-account{
+  margin-top: 4em;
+}
+
+.Account .user-data{
+  width: fit-content;
+  background-color:rgba( 255, 255, 255, 0.8 );
+}

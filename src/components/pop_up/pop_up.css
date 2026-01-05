@@ -1,0 +1,35 @@
+.PopUp-Wrap{
+  box-sizing: border-box;
+  z-index: 997;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  background-color: rgb( 128, 128, 128, 0.7 );
+}
+
+.PopUp{
+  z-index: 998;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 1em;
+}
+
+.PopUp.close{
+  align-self: flex-end;
+}
+
+.PopUp.title{
+  margin-top: 0px;
+}
+
+.PopUp.msg{
+  
+}
