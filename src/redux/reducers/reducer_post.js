@@ -47,13 +47,13 @@ function postReducer( state, { type, payload } ){
           };
         };
         return {
-          ...state, loader:[ false ], appos, employees:state.employees.map( e => e.id !== emp.id ?e :emp ),
+          ...state, loader: 0, appos, employees:state.employees.map( e => e.id !== emp.id ?e :emp ),
           message:{
             "¡Éxito!":`Has reservado una cita con ${emp.first_name} el día ${ payload.postData.day } de ${ payload.localData.start_time } a ${ payload.localData.end_time }`
           }
         };
       }else{
-        return { ...state, loader:[ false ], message:payload.res ?payload.res.errors :errs.conn };
+        return { ...state, loader: 0, message:payload.res ?payload.res.errors :errs.conn };
       };
     };
     default:

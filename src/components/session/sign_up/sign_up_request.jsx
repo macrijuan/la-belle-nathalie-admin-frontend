@@ -15,7 +15,7 @@ const SignUpRequest = ( { setStep, email } ) => {
     handlers:{
       submit: async ( _email ) => {
         try{
-          dispatch( setProp( "loader", [ true ] ) );
+          dispatch( setProp( "loader", 1 ) );
           const res = await fetch(`${process.env.SERVER}/user/post_user/request`,
             {
               method: "POST",
@@ -32,7 +32,7 @@ const SignUpRequest = ( { setStep, email } ) => {
               setStep( 2 );
             }else{
               const body = await res.json();
-              dispatch( setProp2( { message: body.errors, loader: [false ] } ) );
+              dispatch( setProp2( { message: body.errors, loader: 0 } ) );
               if( res.status === 500 ) navigate( "/" );
             };
           };

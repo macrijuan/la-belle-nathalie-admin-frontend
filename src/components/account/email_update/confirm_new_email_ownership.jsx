@@ -11,7 +11,7 @@ const ConfirmNewEmailOwnerShip = ({ setAccountOrUpd, user, possibleNewEmail }) =
   const dispatch = useDispatch();
   const handleSubmit = async () => {
     if( user.email_update_expiration > Date.now() ){
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       try{
         const res = await fetch( `${process.env.SERVER}/user/update/email/confirm_new_email_ownership`, config( store.getState().user.token, "PUT", body.current ) );
         if( res.ok ){
@@ -35,7 +35,7 @@ const ConfirmNewEmailOwnerShip = ({ setAccountOrUpd, user, possibleNewEmail }) =
         console.log( err );
         dispatch( setProp( "message", errs.conn ) );
       };
-      dispatch( setProp( "loader", [ false ] ) );
+      dispatch( setProp( "loader", 0 ) );
     }else{
       console.log( "email_update_expiration: ", user.email_update_expiration );
       dispatch( setProp( "message", errs.token ) );

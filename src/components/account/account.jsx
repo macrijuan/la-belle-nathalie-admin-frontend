@@ -28,7 +28,7 @@ const Account = () => {
 
   const emailUpdateRequest = async () => {
     if( !user.email_update_expiration ){
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       try{
         const res = await fetch( `${process.env.SERVER}/user/update/email/put_user_email`, config( store.getState().user.token, "PUT" ) );
         if( res.ok ){
@@ -59,7 +59,7 @@ const Account = () => {
       setAccountOrUpd( "password_update" );
     }else{
       console.log( "password update requested." );
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       try{
         const res = await fetch( `${process.env.SERVER}/user/update/password/update_request/signed_in`, config( store.getState().user.token, "PUT" ) );
         if( res.ok ){
@@ -89,7 +89,7 @@ const Account = () => {
   const navigate = useNavigate();
   const handleAccountDeletion = async () => {
     try{
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       const res = await fetch( `${process.env.SERVER}/user/delete_user`, config( user.token, "DELETE" ) );
       if( res.ok ){
         dispatch( signOut() );

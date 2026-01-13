@@ -4,7 +4,7 @@ const getReducer = ( state, { type, payload } ) => {
   // console.log( 'action type:', type );
   // console.log( "payload:" ); console.log( payload );
   switch ( type ) {
-    case actions.APPOINTMENT:
+    case actions.APPOINTMENT:{
       if( payload.errors ){
         return { ...state, message: payload.errors };
       }else{
@@ -14,8 +14,22 @@ const getReducer = ( state, { type, payload } ) => {
           a.sub_services.forEach( ss => { ss.id = parseInt( ss.id ) } );
           a.employee.id = parseInt( a.employee.id );
         } );
-        return { ...state, appos:payload, loader: 0 };
+        return { ...state, loader: 0, appos:payload, appoReq: 1 };
       };
+    };
+    case actions.SERVICE:{
+      if( !payload.errors ){
+        payload.forEach( s => {
+            s.id = parseInt( s.id );
+            s.sub_services.forEach( ss => {
+              ss.id = parseInt( ss.id );
+              ss.mins = parseInt( ss.mins );
+              ss.serviceId = parseInt( ss.serviceId );
+            } );
+          } );
+        return { ...state, loader: 0, services: payload, servReq: 1 };
+      }else return { ...state, loader: 0, message: payload.errors };
+    };
     case actions.APPO_CAL:{
       if( !payload.errors ){
         if( payload.emps.length ){
@@ -61,24 +75,12 @@ const getReducer = ( state, { type, payload } ) => {
             ?{ ...state, loader: 0, message: 0, services: payload.servs, employees: payload.emps }
           :{ ...state, loader: 0, message: 0, employees: payload.emps,  };
         }else{
-          return { ...state, loader:[ false ], message:{ employees: "Employees not found for this service." } };
+          return { ...state, loader: 0, message:{ employees: "Employees not found for this service." } };
         };
       }else{
-        return { ...state, loader:[ false ], message:payload.errors };
+        return { ...state, loader: 0, message:payload.errors };
       };
     };
-    case actions.SERVICE:
-      if( !payload.errors ){
-        payload.forEach( s => {
-            s.id = parseInt( s.id );
-            s.sub_services.forEach( ss => {
-              ss.id = parseInt( ss.id );
-              ss.mins = parseInt( ss.mins );
-              ss.serviceId = parseInt( ss.serviceId );
-            } );
-          } );
-        return { ...state, loader: 0, services: payload };
-      }else return { ...state, loader: 0, message: payload.errors };
     default:
       console.log( "GET REDUCER: DEFAULT CASE" );
       console.log( 'action type:', type );

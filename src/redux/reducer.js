@@ -11,10 +11,14 @@ const currentDate = new Date().toLocaleDateString( "en-CA", { year:"numeric", mo
 const initialState = {
 	loader: 0,
   message: 0,
+  alert: 0,
   user: {},
   appos: [],
   services: [],
-  employees: []
+  employees: [],
+  appoReq: 0,
+  servReq: 0,
+  empReq: 0
 };
 
 function rootReducer( state = initialState, { payload, type } ){

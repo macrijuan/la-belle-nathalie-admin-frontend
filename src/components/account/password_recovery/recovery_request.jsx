@@ -10,7 +10,7 @@ const PasswordRecoveryReq = ( { email, setStep } ) => {
   const dispatch = useDispatch();
   const data = useRef({
     handleSubmit: async ( _email ) => {       
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       try{
         const res = await fetch(
           `${process.env.SERVER}/user/password_recovery/recovery_request`,
@@ -18,7 +18,7 @@ const PasswordRecoveryReq = ( { email, setStep } ) => {
         );
         if( res.ok ){
           setStep( 2 );
-          dispatch( setProp( "loader", [ false ] ) );
+          dispatch( setProp( "loader", 0 ) );
         }else{
           const err = await res.json().catch( ( _err ) => {
             console.log( "Did not recive data." ); console.log( _err ); dispatch( setProp( "message", errs.unknown ) );
@@ -32,7 +32,7 @@ const PasswordRecoveryReq = ( { email, setStep } ) => {
         console.log( err );
         dispatch( setProp( "message", errs.conn ) );
       };
-      dispatch( setProp( "loader", [ false ] ) );
+      dispatch( setProp( "loader", 0 ) );
     }
   });
 

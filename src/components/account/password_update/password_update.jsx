@@ -16,7 +16,7 @@ const PasswordUpdate = ( { setAccountOrUpd, user }) => {
       },
       handleSubmit: async () => {
         if( user.password_update_expiration > Date.now() ){          
-          dispatch( setProp( "loader", [ true ] ) );
+          dispatch( setProp( "loader", 1 ) );
           try{
             const res = await fetch( `${process.env.SERVER}/user/update/password/confirm_update/signed_in`, config( store.getState().user.token, "PUT", data.current.body ) );
             if( res.ok ){
@@ -34,7 +34,7 @@ const PasswordUpdate = ( { setAccountOrUpd, user }) => {
             console.log( err );
             dispatch( setProp( "message", errs.conn ) );
           };
-          dispatch( setProp( "loader", [ false ] ) );
+          dispatch( setProp( "loader", 0 ) );
         }else{
           console.log( "password_update_expiration: ", user.password_update_expiration );
           dispatch( setProp( "message", errs.token ) );

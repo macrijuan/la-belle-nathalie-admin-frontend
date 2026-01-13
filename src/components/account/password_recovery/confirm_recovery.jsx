@@ -15,7 +15,7 @@ const ConfirmPasswordRecovery = ( { email } ) => {
     },
     handleSubmit: async () => {       
       console.log( data.current.body );
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       try{
         const res = await fetch(
           `${process.env.SERVER}/user/password_recovery/confirm_recovery`,
@@ -36,7 +36,7 @@ const ConfirmPasswordRecovery = ( { email } ) => {
         console.log( err );
         dispatch( setProp( "message", errs.conn ) );
       };
-      dispatch( setProp( "loader", [ false ] ) );
+      dispatch( setProp( "loader", 0 ) );
     }
   });
 

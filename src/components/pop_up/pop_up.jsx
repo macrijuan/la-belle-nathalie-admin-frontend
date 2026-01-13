@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setProp } from "../../redux/sync";
+import { setProp } from "../../redux/sync.js";
 
 import "./pop_up.css";
 

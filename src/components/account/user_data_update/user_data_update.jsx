@@ -32,7 +32,7 @@ const UserDataUpdate = ({ setAccountOrUpd, user }) => {
               return dispatch( setProp( "message", errs.empty( key ) ) );
             };
           };
-          dispatch( setProp( "loader", [ true ] ) );
+          dispatch( setProp( "loader", 1 ) );
           const res = await fetch( `${process.env.SERVER}/user/update/update_names`, config( user.token, "PUT", body ) );
           if( res.ok ){
             dispatch( setProp2( { user:{ ...user, ...data.current.body } } ) );
@@ -41,12 +41,12 @@ const UserDataUpdate = ({ setAccountOrUpd, user }) => {
             const errFromServer = await res.json().catch( () => { dispatch( setProp( "message", errs.unknown ) ) } );
             if( errFromServer) dispatch( setProp( "message", errFromServer.errors ) );
           };
-          dispatch( setProp( "loader", [ false ] ) );
+          dispatch( setProp( "loader", 0 ) );
         }catch( err ){
           console.log( "error case" );
           console.log( err );
           dispatch( setProp( "message", errs.conn ) );
-          dispatch( setProp( "loader", [ false ] ) );
+          dispatch( setProp( "loader", 0 ) );
         };
       }
     }

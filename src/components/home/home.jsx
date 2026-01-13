@@ -2,8 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setProp, setProp2, signOut } from "../../redux/sync.js";
-import { appoDel } from "../../redux/delete.js";
+import BoardSelector from "./board/board_selector.jsx";
+//appointments
 import { getAppos } from "../../redux/get.js";
+import { appoDel } from "../../redux/delete.js";
+//employees
+// import { getAppos } from "../../redux/get.js";
+// import { appoDel } from "../../redux/delete.js";
+//services
+import { getServices } from "../../redux/get.js";
+// import { appoDel } from "../../redux/delete.js";
+//sub services
+// import { getAppos } from "../../redux/get.js";
+// import { appoDel } from "../../redux/delete.js";
 import { adminSignIn } from "../../redux/post.js";
 import { config, errs } from "../../redux/action_names.js";
 import { backgroundManager, getHomeBackgrounds } from "../../images_getter.js"
@@ -13,20 +24,13 @@ import "./home.css";
 
 const Home = () => {
 
+  const [ state, setState ] = useState( "serv" );
+
   const dispatch = useDispatch();
   const user = useSelector( state => state.user );
   useEffect( () => {
     if( !user.email ) dispatch( adminSignIn( { email:"amacri48@yahoo.com", password:"Password1?" } ) );
-    if( !store.getState().appos ) dispatch( getAppos() );
   }, [ user ] );
-
-  const handleDataInTable = ( dataGroup ) => {
-    switch( dataGroup ){
-      case "appos":{
-
-      }
-    };
-  };
 
   return(
     <div className="Home">
@@ -44,14 +48,14 @@ const Home = () => {
         <button>agergar turno</button>
       </div>
       <div style={{ marginTop: "1em" }}>
-        <label className="Home-label">Click para cambiar la información de la tabla:</label>
-        <select onChange={ ( e ) => { ; } }>
-          <option>turnos</option>
-          <option>empleados</option>
-          <option>servicios</option>
-          <option>sub servicios</option>
+        <label className="Home-label">Click para cambiar la información del tablero:</label>
+        <select onChange={ ( e ) => { setState( e.target.value ); } }>
+          <option value="appo" >turnos</option>
+          <option value="emp" >empleados</option>
+          <option value="serv" >servicios</option>
         </select>
       </div>
+      <BoardSelector selectedBoard={ state } />
     </div>
   );
 };

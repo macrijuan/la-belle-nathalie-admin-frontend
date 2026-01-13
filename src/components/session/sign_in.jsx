@@ -27,7 +27,7 @@ const SignIn = () => {
 
   const handleSubmit = async () => {
     try{
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       const res = await fetch(`${process.env.SERVER}/admin/sign_in`, {
         method: 'POST',
         credentials: "include",
@@ -36,7 +36,7 @@ const SignIn = () => {
       }).catch( ( err ) => {
         console.log( err );
         dispatch( actioner( actions.SESSION, { errors: errs.conn } ) );
-        dispatch( setProp( "loader", [ false ] ) );
+        dispatch( setProp( "loader", 0 ) );
       } );
       if( res ){
         const formatedRes = await res.json();
@@ -51,7 +51,7 @@ const SignIn = () => {
     }catch( err ){
       console.log( err );
       dispatch( setProp( "message", errs.unknown ) );
-      dispatch( setProp( "loader", [ false] ) );
+      dispatch( setProp( "loader", 0 ) );
     };
   };
 

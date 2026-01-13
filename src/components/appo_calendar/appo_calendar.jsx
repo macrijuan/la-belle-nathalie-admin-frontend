@@ -68,7 +68,7 @@ const AppoCalendar = () => {
   useEffect( () => {
     console.log( "useEffect executed" );
     if( !services.length || !employee ){
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       dispatch( appoCalReq() );
     };
     backgroundManager( getAppoCalendarBackgrounds, "appo_calendar", backgrounds, setSelectedBackground );
@@ -100,7 +100,7 @@ const AppoCalendar = () => {
   const days = [];
 
   const handleServiceChange = ( servInd ) => {
-    dispatch( setProp( "loader", [ true ] ) );
+    dispatch( setProp( "loader", 1 ) );
     dateData.current.sub_servs = [];
     dateData.current.appoDurationInMins = 0;
     dateData.current.empShiftStart = toMins( services[ state.service ][ employee.shift ][ 0 ] );
@@ -150,11 +150,11 @@ const AppoCalendar = () => {
   };
 
   const handleAppoPost = ( day, employeeId, sub_servs, start_time ) => {
-    dispatch( setProp( "loader", [ true ] ) );
+    dispatch( setProp( "loader", 1 ) );
     const end_time = toHs( toMins( start_time ) + dateData.current.appoDurationInMins );
     console.log( { day, employeeId: employeeId, sub_servs} );
     console.log( "Submited!" );
-    dispatch( setProp( "loader", [ false ] ) );
+    dispatch( setProp( "loader", 0 ) );
     dispatch( postAppo(
       { day, employeeId: employeeId, sub_servs:sub_servs.map( ss => ss.id ) },
       {

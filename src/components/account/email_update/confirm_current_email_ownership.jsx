@@ -17,7 +17,7 @@ const ConfirmCurrentEmailOwnerShip = ( { setAccountOrUpd, setEmailToCheck, user,
 
   const handleSubmit = async () => {
     if( user.email_update_expiration > Date.now() ){
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       try{
         const res = await fetch( `${process.env.SERVER}/user/update/email/confirm_current_email_ownership`, config( store.getState().user.token, "PUT", body.current ) );
         if( res.ok ){
@@ -43,7 +43,7 @@ const ConfirmCurrentEmailOwnerShip = ( { setAccountOrUpd, setEmailToCheck, user,
         console.log( err );
         dispatch( setProp( "message", errs.conn ) );
       };
-      dispatch( setProp( "loader", [ false ] ) );
+      dispatch( setProp( "loader", 0 ) );
     }else{
       dispatch( setProp( "message", errs.token ) );
       console.log( "redirect to account");

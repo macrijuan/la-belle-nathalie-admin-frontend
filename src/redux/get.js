@@ -35,9 +35,14 @@ export const getServEmps = ( serviceId ) => async ( dispatch ) => {
 
 export const getServices = () => async ( dispatch ) => {
   const token = store.getState().user.token
-  const servsReq = await fetch( `${process.env.SERVER}/service/get_services`, config( token, 'GET' ) );
-  const servs = await servsReq.json().catch( () => { return { errors:errs.conn } } );
-  dispatch( actioner( actions.GET, actioner( actions.SERVICE, servs ) ) );
+  const res = await fetch( `${process.env.SERVER}/service/get_services`, config( token, 'GET' ) )
+  .catch( err => { console.log( err ); return 0 } );
+  if( res ){
+    const servs = await res.json().catch( () => { return { errors: errs.unknown } } );
+    dispatch( actioner( actions.GET, actioner( actions.SERVICE, servs ) ) );
+  }else{
+    dispatch( actioner( actions.GET, actioner( actions.SERVICE, { errors: errs.conn } ) ) );
+  };
 };
 
 export const followed_users = ( id, token, filters ) => async( dispatch ) => {

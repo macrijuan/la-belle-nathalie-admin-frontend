@@ -9,7 +9,7 @@ import "../sign_in.css";
 const SignUp = ( { email } ) => {
 
   useEffect( () => {
-    dispatch( setProp( "loader", [ false ] ) );
+    dispatch( setProp( "loader", 0 ) );
   }, [] );
 
   const body = useRef( { token:"", email: email.current, password: "", first_name: "", last_name: "" } );
@@ -25,7 +25,7 @@ const SignUp = ( { email } ) => {
         dispatch( setProp( "message", { contraseña: "La contraseña y su confirmación no son iguales."} ) )
         return;
       };
-      dispatch( setProp( "loader", [ true ] ) );
+      dispatch( setProp( "loader", 1 ) );
       let res = undefined;
       try{
         res = await fetch(`${process.env.SERVER}/user/post_user`, {
