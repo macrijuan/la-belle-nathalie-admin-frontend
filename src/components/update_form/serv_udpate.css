@@ -19,7 +19,59 @@
   background-color: rgb(255, 255, 255);
 }
 
-.ServUpdate-FormContainer{
+.ServUpdate-header{
+  background-color: rgb(217, 49, 150);
+}
+
+.ServUpdate-cancel{
+  align-self: flex-end;
+}
+
+.ServUpdate-optionBox-container{
+  margin-block: 0.5em;
+  border: solid 0.1em black;
+  padding-block: 0.5em;
+  text-align: center;
+}
+
+.ServUpdate-optionBox{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ServUpdate-form-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ServUpdate-form{
   width: 100%;
+  border: solid 0.1em black;
+  padding: 0.7em;
   background-color: white;
+}
+
+.ServUpdate-betweenTimes{
+  margin-block: 1em;
+}
+
+.ServUpdate-betweenTimes div{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.ServUpdate-betweenTimes div p{
+  margin-block: 0.5em;
+}
+
+.ServUpdate-betweenTimes div select{
+  margin-left: 0.5em;
+}
+
+
+.ServUpdate-normalInput{
+  margin-block: 1em;
 }

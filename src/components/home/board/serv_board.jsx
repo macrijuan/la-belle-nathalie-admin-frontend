@@ -19,7 +19,7 @@ const ServBoard = () => {
   }, [ user ] );
 
   const toDelete = useRef( { servIds: new Set(), servInds:new Set() } );
-  const [ state, setState ] = useState( { multipleDeletion: 0, update: 1, selectedNames: [] } );
+  const [ state, setState ] = useState( { multipleDeletion: 0, update: null, selectedNames: [] } );
 
   const handleMultipleDeletionList = ( id, ind, name ) => {
     if( toDelete.current.servInds.has( ind ) ){
@@ -40,6 +40,7 @@ const ServBoard = () => {
       setState( { ...state, selectedNames: [ ...state.selectedNames, name ] } );
     };
   };
+
   const handleDelete = async ( id, ind ) => {
     dispatch( setProp( "loader", 1 ) );
     let deleted = undefined;
@@ -54,9 +55,18 @@ const ServBoard = () => {
       setState( { ...state, multipleDeletion: 0, selectedNames: [] } );
     };
   };
-  const handleUpdate = () => {
-    setState( { ...state, update: 1 } );
+
+  const handleUpdateList = ( currentToAdd, ind ) => {
+    if( !state.update ){
+      setState( { ...state, update: { currentData:[ currentToAdd ], inds:[ ind ] } } );
+    }else{
+      setState( { ...state, update: {
+        currentData: [ ...state.update.currentData, currentToAdd ],
+        inds: [ ...state.update.inds, ind ]
+      } } );
+    };
   };
+
   const handleCancelMultDel = () => {
     toDelete.current.servIds.clear();
     toDelete.current.servInds.clear();
@@ -66,7 +76,7 @@ const ServBoard = () => {
   return(
     <div className="Home-board">
       <Alert accept={ () => { ; } } cancel={ () => { ; } } />
-      <ServUpdate state={ state } setState={ setState }/>
+      <ServUpdate state={ state } setState={ setState } />
       {
         state.multipleDeletion
           ?<div className="ServBoard-selectedToDelete">
@@ -90,7 +100,7 @@ const ServBoard = () => {
             return(
               <div key={ i } className="ServBoard-row" style={{ backgroundColor: i%2 !== 0 ?"rgb( 239, 239, 239 )" :"rgb( 253, 172, 238 )" }}>
                 <div className="Home-row-buttons">
-                  <button onClick={ () => { handleUpdate( s.id, i ); } }>actualizar</button>
+                  <button onClick={ () => { handleUpdateList( s, i ); } }>actualizar</button>
                   <button onClick={ () => { if( state.multipleDeletion ) handleMultipleDeletionList( s.id, i, s.name ); else handleDelete( s.id, i ); } }>eliminar</button>
                 </div>
                 <h4>{ s.name }</h4>
