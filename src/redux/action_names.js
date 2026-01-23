@@ -70,6 +70,9 @@ export const config = ( token, method, body ) => {
 export const errs = {
   conn:{ conexión: "Falló la conexión del servidor." },
   unknown: { desconocido: "Ha ocurrido un error." },
+  token: { expirado:"El código de actualización de email expiró. Si aún quiere actualizar su dirección de correo electrónico, vuelva a intentarlo." },
+  //dinamyc errors
   empty: ( dataName ) => { return { [ dataName ]: `${dataName.charAt( 0 ).toUpperCase() + dataName.slice( 1 ).replace( "_", " " )} no puede ser nulo.` } },
-  token: { expirado:"El código de actualización de email expiró. Si aún quiere actualizar su dirección de correo electrónico, vuelva a intentarlo." }
-};
+  length: ( dataName, min, max ) => { return { [ dataName ]: `Debe tener entre ${min} y ${max} caractéres.` } },
+  timeOrder: ( dataName, first, last ) => { return { [ dataName ]: `El horario ${first} debe ser menor al ${last}.` } }
+}

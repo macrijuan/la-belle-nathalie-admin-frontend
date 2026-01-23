@@ -7,18 +7,22 @@ import "./serv_udpate.css";
 
 const ServUpdate = ({ state, setState }) => {
 
-  const dispatch = useDispatch();
   const [ selected, setSelected ] = useState( {} ); //html content to udpate the fields selected using the checkboxes.
 
   const data = useRef({
     body: {}
   });
 
+  const handleClose = () => {
+    if( Object.keys( selected ).length ) setSelected( {} );
+    setState( { ...state, update: null } );
+  };
+
   if( state.update ) return(
     <div className="ServUpdate-container">
       <div className="ServUpdate">
       <h1>Formulario de actualización de servicios.</h1>
-        <button className="ServUpdate-cancel" onClick={() => { setState( { ...state, update: null } ); } }>cerrar</button>
+        <button className="ServUpdate-cancel" onClick={() => { handleClose(); } }>cerrar</button>
         <ServCheckboxContainer data={ data } selected={ selected } setSelected={ setSelected } />
         <div className="ServUpdate-form-container">
           <ServCurData state={ state } data={ data }/>

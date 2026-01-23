@@ -1,5 +1,4 @@
 import React from "react";
-import Select from "../controled_html/select.jsx";
 
 export const normalInput = ( shouldAdd, key, selected, setSelected, body ) => {
   console.log( "normalInput executed" );
@@ -7,7 +6,7 @@ export const normalInput = ( shouldAdd, key, selected, setSelected, body ) => {
     setSelected( { ...selected, [ key ]: () => (
       <div key={ key } className="ServUpdate-normalInput">
         <label>Nombre:</label>
-        <input onChange = { ( e ) => { if( e.target.value.length < 36 ) body[ key ] = e.target.value; } } />
+        <input onChange = { ( e ) => { body[ key ] = e.target.value; } } />
       </div>
     ) } );
   }else{
@@ -36,7 +35,7 @@ const options2 = ( times ) => {
   return opts;
 };
 
-export const betweenTimes = ( shouldAdd, key, selected, setSelected, body, label, event ) => {
+export const betweenTimes = ( shouldAdd, key, selected, setSelected, body, label ) => {
   console.log( "betweenTimes executed" );
   if( shouldAdd ){
     const times = key === "am" ?[ 8, 15 ] :[ 15, 21 ];
@@ -48,28 +47,34 @@ export const betweenTimes = ( shouldAdd, key, selected, setSelected, body, label
         <div>
           <p>Hora de inicio:</p>
           <p>Hora:</p>
-          <Select
-            options={ options( times ) }
-            handleChange={ ( e, setValue ) => { event( 0, "hh", e.target.value, key, setValue ); } }
-          />
+          <select onChange = { e => { body[ key ][ 0 ] =  `${ e.target.value }:${ body[key][ 0 ][ 3 ] }${ body[key][ 0 ][ 4 ] }`; } }>
+            { options( times ).map( ( o, i ) => ( <option value={ o } key={ i }>{ o }</option>))}
+          </select>
           <p>Minuto:</p>
-          <Select
-            options={ [ "00", "10", "20", "30", "40", "50" ] }
-            handleChange={ ( e, setValue ) => { event( 0, "mm", e.target.value, key, setValue ); } }
-          />
+          <select onChange = { e => { body[ key ][ 0 ] =  `${body[key][ 0 ][ 0 ]}${body[key][ 0 ][ 1 ]}:${e.target.value}`; } }>
+            <option value="00" >00</option>
+            <option value="10" >10</option>
+            <option value="20" >20</option>
+            <option value="30" >30</option>
+            <option value="40" >40</option>
+            <option value="50" >50</option>
+          </select>
         </div>
         <div>
           <p>Hora de finalización:</p>
           <p>Hora</p>
-          <Select
-            options={ options2( times ) }
-            handleChange = { ( e, setValue ) => { event( 1, "hh", e.target.value, key, setValue ); } }
-          />
+          <select onChange = { e => { body[ key ][ 1 ] =  `${ e.target.value }:${ body[key][ 1 ][ 3 ] }${ body[key][ 1 ][ 4 ] }`; } }>
+            { options2( times ).map( ( o, i ) => ( <option value={ o } key={ i }>{ o }</option>))}
+          </select>
           <p>Minuto:</p>
-          <Select
-            options={ [ "00", "10", "20", "30", "40", "50" ] }
-            handleChange={ ( e, setValue ) => { event( 1, "mm", e.target.value, key, setValue ); } }
-          />
+          <select onChange = { e => { body[ key ][ 1 ] =  `${body[key][ 1 ][ 0 ]}${body[key][ 1 ][ 1 ]}:${e.target.value}`; } }>
+            <option value="00" >00</option>
+            <option value="10" >10</option>
+            <option value="20" >20</option>
+            <option value="30" >30</option>
+            <option value="40" >40</option>
+            <option value="50" >50</option>
+          </select>
         </div>
       </div>
     ) } );
