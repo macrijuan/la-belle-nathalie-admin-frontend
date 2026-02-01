@@ -48,3 +48,27 @@ export const postServ = ( postData ) => async dispatch => {
     dispatch( actioner( actions.POST, actioner( actions.SERVICE, _errs.conn_server_format ) ) );
   };
 };
+
+export const postEmp = ( postData ) => async ( dispatch, getState ) => {
+  try{
+    const token = getState().user.token;
+    const res = await fetch( `${process.env.SERVER}/employee/post_employee`, config( token, "POST", postData ) )
+    .catch( err => { console.log( err ); return 0 } );
+    if( res ){
+      console.log( "THER'S RES" );
+      if( res.ok ){
+        const id = await res.json();
+        postData.id = id;
+        dispatch( actioner( actions.POST, actioner( actions.EMPLOYEE, postData ) ) );
+      }else{
+        const err = await res.json();
+        dispatch( actioner( actions.POST, actioner( actions.EMPLOYEE, err ) ) );
+      };
+    }else{
+      console.log( "THER'S NO RES" );
+      dispatch( actioner( actions.POST, actioner( actions.EMPLOYEE, _errs.conn_server_format ) ) );
+    };
+  }catch( err ){
+    dispatch( actioner( actions.POST, actioner( actions.EMPLOYEE, _errs.unknown_server_format ) ) );
+  };
+};

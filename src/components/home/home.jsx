@@ -43,7 +43,7 @@ const Home = () => {
         <button>cerrar sesión</button>
       </div>
       <div className="Home-inline">
-        <button>agregar empleado</button>
+        <button onClick={ () => { setState( { ...state, post:"emp" } ); } }>agregar empleado</button>
         <button onClick={ () => { setState( { ...state, post:"serv" } ); } }>agregar servicio</button>
         <button>agregar sub servicio</button>
         <button>agregar turno</button>

@@ -1,8 +1,8 @@
 import { actions, errs } from "../action_names.js";
 
 function postReducer( state, { type, payload } ){
-  // console.log( "action type:", type );
-  // if( payload ){ console.log( "payload:" ); console.log( payload ); };
+  console.log( "action type:", type );
+  if( payload ){ console.log( "payload:" ); console.log( payload ); };
   switch ( type ) {
     case actions.APPOINTMENT:{
       if( payload.res && !payload.res.errors && payload.res[ 0 ] ){
@@ -56,11 +56,19 @@ function postReducer( state, { type, payload } ){
         return { ...state, loader: 0, message:payload.res ?payload.res.errors :errs.conn };
       };
     };
+
     case actions.SERVICE:{
       if( payload.errors ){
         return { ...state, loader: 0, message: payload.errors };
       };
       return { ...state, loader: 0, services:[ ...state.services, { ...payload, sub_services: [] } ] };
+    };
+
+    case actions.EMPLOYEE:{
+      if( payload.errors ) return { ...state, loader: 0, message: payload.errors };
+      payload.first_name = payload.first_name.toUpperCase();
+      payload.last_name = payload.last_name.toUpperCase();
+      return { ...state, loader: 0, employees:[ ...state.employees, payload ] };
     };
     default:
     console.log( "POST DEFAULT CASE" );

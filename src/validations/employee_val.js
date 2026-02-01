@@ -8,9 +8,6 @@ export const nameVal = ( name, text ) => {
 };
 
 export const idenVal = ( iden ) => {
-  console.log( iden );
-  console.log( "typeof iden" );
-  console.log( typeof iden );
   if( typeof iden !== 'string') return errs.unknown;
   if( !(/\d/).test( iden ) ) return errObj( "identidad", errs.strict_char_type( "identidad", "números" ) );
   if( iden < 4000000 || iden > 100000000 ) return errObj( "identidad", errs.strict_size( "identidad", '4.000.000', '100.000.000' ) );
@@ -19,4 +16,18 @@ export const idenVal = ( iden ) => {
 export const shiftVal = ( shift ) => {
   if( typeof shift !== 'string' ) return errs.unknown;
   if( !( shift === 'am' || shift === 'pm' ) ) return errObj( "turno", errs.not_valid( "turno" ) );
+};
+
+export const postEmpVal = ( body ) => {
+  const first_name = nameVal( body.first_name, "nombre" );
+  if( first_name ) return first_name;
+
+  const last_name = nameVal( body.last_name, "apellido" );
+  if( last_name ) return last_name;
+
+  const identity = idenVal( body.identity );
+  if( identity ) return identity;
+
+  const shift = shiftVal( body.shift );
+  if( shift ) return shift;
 };
