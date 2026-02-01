@@ -1,0 +1,45 @@
+.PostServ-container{
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(128, 128, 128, 0.7);
+}
+
+.PostServ{
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  padding: 1em;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  background-color: rgb(255, 255, 255);
+}
+
+.PostServ-cancel{
+  align-self: flex-end;
+}
+
+.PostServ-submit{
+  align-self: center;
+  display: block;
+  margin-top: 1em;
+}
+
+.PostServ h3{
+  margin-bottom: 0px;
+}
+.PostServ h4{
+  margin-bottom: 0px;
+  margin-top: 0.3em;
+}
+
+.PostServ select{
+  margin-right: 0.75em;
+}

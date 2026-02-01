@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { serviceUpdate } from "../../../../redux/put.js";
 
 const ServCurData = ({ state }) => {
 

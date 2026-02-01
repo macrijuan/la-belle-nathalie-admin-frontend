@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
-import ServCheckboxContainer from "./checkbox_container/serv_checkbox_container.jsx";
-import ServUpdateForm from "./form_container/form/serv_update_form.jsx";
-import ServCurData from "./form_container/current_data_container/serv_current_data.jsx";
-import "./serv_update.css";
+import EmpCheckboxContainer from "./checkbox_container/emp_checkbox_container.jsx";
+import EmpCurData from "./form_container/current_data_container/emp_current_data.jsx";
+import EmpUpdateForm from "./form_container/form/emp_update_form.jsx";
+import "./serv_update.css"; //CHECK THIS LINE
 
-const ServUpdate = ({ state, setState }) => {
+const EmpUpdate = ({ state, setState }) => {
 
   const [ selected, setSelected ] = useState( {} ); //html content to udpate the fields selected using the checkboxes.
 
@@ -21,16 +21,16 @@ const ServUpdate = ({ state, setState }) => {
   if( state.update ) return(
     <div className="ServUpdate-container">
       <div className="ServUpdate">
-      <h1>Formulario de actualización de servicios.</h1>
+      <h1>Formulario de actualización de empleados.</h1>
         <button className="ServUpdate-cancel" onClick={() => { handleClose(); } }>cerrar</button>
-        <ServCheckboxContainer data={ data } selected={ selected } setSelected={ setSelected } />
+        <EmpCheckboxContainer data={ data } selected={ selected } setSelected={ setSelected } />
         <div className="ServUpdate-form-container">
-          <ServCurData state={ state } data={ data }/>
-          <ServUpdateForm state={ state } selected={ selected } data={ data } />
+          <EmpCurData state={ state } data={ data }/>
+          <EmpUpdateForm state={ state } selected={ selected } data={ data } />
         </div>
       </div>
     </div>
   );
 };
 
-export default ServUpdate;
+export default EmpUpdate;

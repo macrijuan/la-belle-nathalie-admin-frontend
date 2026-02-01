@@ -7,7 +7,7 @@ import { nameVal, shiftVal, shiftsVal } from "../../../../validations/service_va
 const ServUpdateForm = ({ selected, state, data }) => {
   const dispatch = useDispatch();
   return(
-    ( selected.name || selected.am || selected.mp )
+    ( selected.name || selected.am || selected.pm )
       ?<form className="ServUpdate-form" onSubmit={ ( e ) => {
           e.preventDefault();
           dispatch( setProp( "loader", 1 ) );

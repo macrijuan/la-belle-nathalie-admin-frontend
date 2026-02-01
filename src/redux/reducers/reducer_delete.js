@@ -38,6 +38,7 @@ function deleteReducer( state, { type, payload } ){
       };
       return { ...state, loader: 0, message: payload.errors };
     };
+    
     case actions.SERVICE:{
       if( Array.isArray( payload ) ){
         const servs = [ ...state.services ];
@@ -49,12 +50,31 @@ function deleteReducer( state, { type, payload } ){
           if( servs[ a ] === 0 ) servs.splice( a, 1 );
           else a++;
         };
-        return { ...state, loader: 0, services: servs, servReq: 1 };
+        return { ...state, loader: 0, services: servs };
       }else{
         return { ...state, message: payload.errors };
       };
     };
-    case actions.SESSION: return { loader: 0, message:0, user:{}, appos:[], services:[], employees:[] };
+
+    case actions.EMPLOYEE:{
+      if( Array.isArray( payload ) ){
+        const emps = [ ...state.employees ];
+        payload.forEach( i => {
+          emps[ i ] = 0;
+        } );
+        let a = 0;
+        while( a < emps.length ){
+          if( emps[ a ] === 0 ) emps.splice( a, 1 );
+          else a++;
+        };
+        return { ...state, loader: 0, employees: emps };
+      }else{
+        return { ...state, message: payload.errors };
+      };
+    };
+
+    case actions.SESSION: return { loader: 0, message: 0, user: {}, appos: [], services: [], employees: [] };
+
     default:
     console.log( payload );
     return state;

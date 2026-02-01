@@ -56,6 +56,12 @@ function postReducer( state, { type, payload } ){
         return { ...state, loader: 0, message:payload.res ?payload.res.errors :errs.conn };
       };
     };
+    case actions.SERVICE:{
+      if( payload.errors ){
+        return { ...state, loader: 0, message: payload.errors };
+      };
+      return { ...state, loader: 0, services:[ ...state.services, { ...payload, sub_services: [] } ] };
+    };
     default:
     console.log( "POST DEFAULT CASE" );
     console.log( "action type:", type );

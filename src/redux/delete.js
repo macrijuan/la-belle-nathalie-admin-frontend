@@ -1,16 +1,21 @@
-import { actions, actioner, errs, config } from "./action_names";
+import { actions, actioner, config } from "./action_names.js";
+import { errs } from "../errors.js";
 import store from "./store";
 
 
 export const appoDel = ( id, appoInd, empId, appoDay, appoTime ) => async dispatch => {
   const token  = store.getState().user.token;
   const res = await fetch( `${process.env.SERVER}/appointment/delete_appointment/${id}`, config( token, 'DELETE' ) )
-  .catch( err => { console.log( err ); return { ok: 0 } } );
-  if( res.ok ){
-    dispatch( actioner( actions.DELETE, actioner( actions.APPOINTMENT, { appoInd, empId, appoDay, appoTime } ) ) );
+  .catch( err => { console.log( err ); return 0; } );
+  if( res ){
+    if( res.ok ){
+      dispatch( actioner( actions.DELETE, actioner( actions.APPOINTMENT, { appoInd, empId, appoDay, appoTime } ) ) );
+    }else{
+      const resBody = await res.json().catch( ( err ) => { console.log( err ); return errs.conn_server_format } );
+      dispatch( actioner( actions.DELETE, actioner( actions.APPOINTMENT, resBody ) ) );
+    };
   }else{
-    const resBody = await res.json().catch( ( err ) => { console.log( err ); return { errors: errs.conn } } );
-    dispatch( actioner( actions.DELETE, actioner( actions.APPOINTMENT, resBody ) ) );
+    dispatch( actioner( actions.DELETE, actioner( actions.APPOINTMENT, errs.conn_server_format ) ) );
   };
 };
 
@@ -22,12 +27,30 @@ export const servDel = ( servIds, servInds ) => async ( dispatch, getState ) => 
     if( res.ok ){
       dispatch( actioner( actions.DELETE, actioner( actions.SERVICE, servInds ) ) );
     }else{
-      const resBody = await res.json().catch( ( err ) => { console.log( err ); return { errors: errs.unknown } } );
+      const resBody = await res.json().catch( ( err ) => { console.log( err ); return  errs.unknown_server_format } );
       dispatch( actioner( actions.DELETE, actioner( actions.SERVICE, resBody ) ) );
     };
     return 1;
   }else{
-    dispatch( actioner( actions.DELETE, actioner( actions.SERVICE, { errors: errs.conn } ) ) );
+    dispatch( actioner( actions.DELETE, actioner( actions.SERVICE, errs.conn_server_format ) ) );
+    return 0;
+  };
+};
+
+export const empDel = ( ids, inds ) => async ( dispatch, getState ) => {
+  const token  = getState().user.token;
+  const res = await fetch( `${process.env.SERVER}/employee/delete_employees`, config( token, 'DELETE', ids ) )
+  .catch( err => { console.log( err ); return 0 } );
+  if( res ){
+    if( res.ok ){
+      dispatch( actioner( actions.DELETE, actioner( actions.EMPLOYEE, inds ) ) );
+    }else{
+      const resBody = await res.json().catch( ( err ) => { console.log( err ); return  errs.unknown_server_format } );
+      dispatch( actioner( actions.DELETE, actioner( actions.EMPLOYEE, resBody ) ) );
+    };
+    return 1;
+  }else{
+    dispatch( actioner( actions.DELETE, actioner( actions.EMPLOYEE, errs.conn_server_format ) ) );
     return 0;
   };
 };

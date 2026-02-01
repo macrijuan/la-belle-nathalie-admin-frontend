@@ -17,7 +17,7 @@ export const normalInput = ( shouldAdd, key, selected, setSelected, body ) => {
   };
 };
 
-const options = ( times ) => {
+export const options = ( times ) => {
   const opts = []
   for( let o = times[ 0 ]; o < times[ 1 ]; o++ ){
     if( o > 9 ) opts.push( `${o}` );
@@ -26,7 +26,7 @@ const options = ( times ) => {
   return opts;
 };
 
-const options2 = ( times ) => {
+export const options2 = ( times ) => {
   const opts = []
   for( let o = times[ 0 ]+1; o < times[ 1 ]+1; o++ ){
     if( o > 9 ) opts.push( `${o}` );
@@ -38,7 +38,7 @@ const options2 = ( times ) => {
 export const betweenTimes = ( shouldAdd, key, selected, setSelected, body, label ) => {
   console.log( "betweenTimes executed" );
   if( shouldAdd ){
-    const times = key === "am" ?[ 8, 15 ] :[ 15, 21 ];
+    const times = key === "am" ?[ 8, 17 ] :[ 12, 21 ];
     const times1 = times[ 0 ]+1;
     body[ key ] = [ `${( times[ 0 ] > 9 ?times[ 0 ] :`0${times[ 0 ]}` )}:00`, `${( times1 > 9 ?times1 :`0${times1}` )}:00` ];
     setSelected( { ...selected, [ key ]: () => (

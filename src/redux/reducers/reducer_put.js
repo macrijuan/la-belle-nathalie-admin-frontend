@@ -18,6 +18,17 @@ function putReducer( state, { type, payload } ){
         return { ...state, loader: 0, services };
       };
     };
+    case actions.EMPLOYEE:{
+      if( payload.errors ){
+        return { ...state, loader: 0, message: payload.errors };
+      }else{
+        const employees = [ ...state.employees ];
+        payload.inds.forEach( selectedInd => {
+          employees[ selectedInd ] = { ...employees[ selectedInd ], ...payload.body.update };
+        });
+        return { ...state, loader: 0, employees };
+      };
+    };
     default:
     console.log( payload );
     return state;

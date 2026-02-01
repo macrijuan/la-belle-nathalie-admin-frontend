@@ -30,6 +30,10 @@ const getReducer = ( state, { type, payload } ) => {
         return { ...state, loader: 0, services: payload, servReq: 1 };
       }else return { ...state, loader: 0, message: payload.errors };
     };
+    case actions.EMPLOYEE:{
+      if( payload.errors ) return { ...state, loader: 0, message: payload.errors };
+      else return { ...state, loader: 0, employees: payload };
+    };
     case actions.APPO_CAL:{
       if( !payload.errors ){
         if( payload.emps.length ){

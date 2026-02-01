@@ -1,6 +1,6 @@
 .Home{
   box-sizing: border-box;
-  position: absolute;
+  z-index: 0;
   width: 100vw;
   width: 100dvw;
   height: 100vh;

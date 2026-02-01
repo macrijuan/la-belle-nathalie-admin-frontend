@@ -19,7 +19,7 @@ const ServBoard = () => {
   }, [ user ] );
 
   const toDelete = useRef( { servIds: new Set(), servInds:new Set() } );
-  const [ state, setState ] = useState( { multipleDeletion: 0, update: null, selectedNames: [] } );
+  const [ state, setState ] = useState( { multipleDeletion: 0, update: null, selectedNames: [], post: 0  } );
 
   const handleMultipleDeletionList = ( id, ind, name ) => {
     if( toDelete.current.servInds.has( ind ) ){
@@ -41,7 +41,7 @@ const ServBoard = () => {
     };
   };
 
-  const handleDelete = async ( id, ind ) => {
+const handleDelete = async ( id, ind ) => {
     dispatch( setProp( "loader", 1 ) );
     let deleted = undefined;
     if( state.selectedNames.length ){
@@ -52,7 +52,7 @@ const ServBoard = () => {
     if( deleted ){
       toDelete.current.servIds.clear();
       toDelete.current.servInds.clear();
-      setState( { ...state, multipleDeletion: 0, selectedNames: [] } );
+      setState( { ...state, multipleDeletion: 0, selectedToDel: [] } );
     };
   };
 

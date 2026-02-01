@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setProp, setProp2, signOut } from "../../redux/sync.js";
 import BoardSelector from "./board/board_selector.jsx";
+import PostFormSelector from "../post_form/post_form_selector.jsx";
 //appointments
 import { getAppos } from "../../redux/get.js";
 import { appoDel } from "../../redux/delete.js";
@@ -24,7 +25,7 @@ import "./home.css";
 
 const Home = () => {
 
-  const [ state, setState ] = useState( "serv" );
+  const [ state, setState ] = useState( { board: "emp", post: 0 } );
 
   const dispatch = useDispatch();
   const user = useSelector( state => state.user );
@@ -42,20 +43,21 @@ const Home = () => {
         <button>cerrar sesión</button>
       </div>
       <div className="Home-inline">
-        <button>agergar empleado</button>
-        <button>agergar servicio</button>
-        <button>agergar sub servicio</button>
-        <button>agergar turno</button>
+        <button>agregar empleado</button>
+        <button onClick={ () => { setState( { ...state, post:"serv" } ); } }>agregar servicio</button>
+        <button>agregar sub servicio</button>
+        <button>agregar turno</button>
       </div>
       <div style={{ marginTop: "1em" }}>
         <label className="Home-label">Click para cambiar la información del tablero:</label>
-        <select onChange={ ( e ) => { setState( e.target.value ); } }>
-          <option value="appo" >turnos</option>
+        <select onChange={ ( e ) => { setState( { ...state, board: e.target.value } ); } }>
           <option value="emp" >empleados</option>
+          <option value="appo" >turnos</option>
           <option value="serv" >servicios</option>
         </select>
       </div>
-      <BoardSelector selectedBoard={ state } />
+      <BoardSelector selectedBoard={ state.board } />
+      <PostFormSelector state={ state } setState={ setState } />
     </div>
   );
 };

@@ -1,14 +1,13 @@
-import { actioner, actions, filtersToURL, config, errs } from "./action_names.js";
-import store from "./store.js";
+import { actioner, actions, filtersToURL, config } from "./action_names.js";
+import { errs } from "../errors.js";
 
-export const appoCalReq = () => async ( dispatch ) => {
-  const token = store.getState().user.token
-  const servsReq = await fetch( `${process.env.SERVER}/service/get_services`, config( token, 'GET' ) );
-  const servs = await servsReq.json().catch( () => { return { errors:errs.conn } } );
+export const appoCalReq = () => async ( dispatch, getState ) => {
+  const servsReq = await fetch( `${process.env.SERVER}/service/get_services`, config( getState().user.token, 'GET' ) );
+  const servs = await servsReq.json().catch( () => errs.conn_server_format );
   if( !servs.errors ){
     if( servs.length ){
       const empsReq = await fetch( `${process.env.SERVER}/employee/get_employees?service=${servs[ 0 ].id}`, config( token, 'GET' ) );
-      const emps = await empsReq.json().catch( () => { return { errors:errs.conn } } );
+      const emps = await empsReq.json().catch( () => errs.conn_server_format );
       if( !emps.errors ){
         dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, { servs, emps } ) ) );
       }else{
@@ -25,7 +24,7 @@ export const appoCalReq = () => async ( dispatch ) => {
 export const getServEmps = ( serviceId ) => async ( dispatch ) => {
   const token = store.getState().user.token;
   const empsReq = await fetch( `${process.env.SERVER}/employee/get_employees?service=${serviceId}`, config( token, 'GET' ) );
-  const emps = await empsReq.json().catch( () => { return { errors:errs.conn } } );
+  const emps = await empsReq.json().catch( () => errs.conn_server_format );
   if( !emps.errors ){
     dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, { emps } ) ) );
   }else{
@@ -33,30 +32,37 @@ export const getServEmps = ( serviceId ) => async ( dispatch ) => {
   };
 };
 
-export const getServices = () => async ( dispatch ) => {
-  const token = store.getState().user.token
-  const res = await fetch( `${process.env.SERVER}/service/get_services`, config( token, 'GET' ) )
-  .catch( err => { console.log( err ); return 0 } );
-  if( res ){
-    const servs = await res.json().catch( () => { return { errors: errs.unknown } } );
-    dispatch( actioner( actions.GET, actioner( actions.SERVICE, servs ) ) );
-  }else{
-    dispatch( actioner( actions.GET, actioner( actions.SERVICE, { errors: errs.conn } ) ) );
+export const getEmps = () => async ( dispatch, getState ) => {
+  try{
+    const res = await fetch( `${process.env.SERVER}/employee/get_employees`, config( getState().user.token, 'GET' ) )
+    .catch( err => { console.log( err ); return 0; } );
+    if( res ){
+      const body = await res.json();
+      dispatch( actioner( actions.GET, actioner( actions.EMPLOYEE, body ) ) );
+    }else{
+      dispatch( actioner( actions.GET, actioner( actions.EMPLOYEE, errs.conn_server_format ) ) );
+    };
+  }catch( err ){
+    dispatch( actioner( actions.GET, actioner( actions.EMPLOYEE, errs.unknown_server_format ) ) );
   };
 };
 
-export const followed_users = ( id, token, filters ) => async( dispatch ) => {
-  const res = fetch( `${process.env.SERVER}/user/get_followed/${id}?${ filtersToURL( filters ) }`, config( token, 'GET' ) );
-  const resBody = await res.json().catch( () => { return { errors:errs.conn }; } );
-  dispatch( actioner( actions.FOLLOWED_USERS, resBody  ) );
+export const getServices = () => async ( dispatch, getState ) => {
+  const res = await fetch( `${process.env.SERVER}/service/get_services`, config( getState().user.token, 'GET' ) )
+  .catch( err => { console.log( err ); return 0 } );
+  if( res ){
+    const servs = await res.json().catch( () => errs.unknown_server_format );
+    dispatch( actioner( actions.GET, actioner( actions.SERVICE, servs ) ) );
+  }else{
+    dispatch( actioner( actions.GET, actioner( actions.SERVICE, errs.conn_server_format ) ) );
+  };
 };
 
 
-export const getAppos = () => async ( dispatch ) => {
+export const getAppos = () => async ( dispatch, getState ) => {
   console.log( "appos requested" );
   try{
-    const token = store.getState().user.token;
-    const res = await fetch( `${process.env.SERVER}/appointment/get_appointments`, config( token, 'GET' )
+    const res = await fetch( `${process.env.SERVER}/appointment/get_appointments`, config( getState().user.token, 'GET' )
     );
     dispatch( actioner( actions.GET, actioner( actions.APPOINTMENT, await res.json() ) ) );
   }catch( err ){
@@ -64,12 +70,17 @@ export const getAppos = () => async ( dispatch ) => {
   };
 };
 
-export const users = ( token, in_page, filters )=>{
-  return async(dispatch)=>{
-    fetch(
-      `${process.env.SERVER}/user/get_users?index=${ in_page.index }&perPage=${ in_page.perPage }${ filtersToURL( filters.users ) }${in_page.options ?"&options=t" :""}`
-      , config( token, 'GET' )
-    ).then( res =>res.json() )
-    .then( res =>dispatch( actioner( actions.GET, actioner( actions.USER, res ) ) ) );
+export const users = () => async( dispatch, getState )=>{
+  try{
+    const res = await fetch( `${process.env.SERVER}/user/get_users`, config( getState().user.token, 'GET' ) );
+    if( res ){
+      const body = await res.json();
+      dispatch( actioner( actions.GET, actioner( actions.USER, body ) ) );
+    }else{
+      dispatch( actioner( actions.GET, actioner( actions.USER, errs.conn_server_format ) ) );
+    };
+  }catch( err ){
+    dispatch( actioner( actions.GET, actioner( actions.USER, errs.unknown_server_format ) ) );
+    throw new Error( err );
   };
 };
