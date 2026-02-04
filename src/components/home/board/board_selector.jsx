@@ -1,6 +1,7 @@
 import React from "react";
 import AppoBoard from "./appo_board.jsx";
 import ServBoard from "./serv_board.jsx";
+import SubServBoard from "./sub_serv_board.jsx";
 import EmpBoard from "./emp_board.jsx";
 
 const BoardSelector = ({ selectedBoard }) => {
@@ -8,6 +9,7 @@ const BoardSelector = ({ selectedBoard }) => {
   switch( selectedBoard ){
     case "appo": return <AppoBoard />;
     case "serv": return <ServBoard />;
+    case "sub_serv": return <SubServBoard />;
     case "emp": return <EmpBoard />;
     default: return (
       <div className="BoardSelector">

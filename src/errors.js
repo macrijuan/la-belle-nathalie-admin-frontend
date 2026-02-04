@@ -10,10 +10,11 @@ export const errs = {
   //dinamyc errors
   length: ( dataName, min, max ) => { return { [ dataName ]: `Debe tener entre ${min} y ${max} caractéres.` } },
   timeOrder: ( dataName, first, last ) => { return { [ dataName ]: `El horario ${first} debe ser menor al ${last}.` } },
+  auth: ( dataName ) =>  { return{ [dataName]: `Operación no autorizada.` } },
   //SINGLE ERROR WITH CUSTOM DATA.
   not_found: ( dataName ) => { return { "no encontrado": `${dataName} no encontrado.` } },
-  sign_in_not_found: ( dataName ) => { return { "inicio de sesión": `No existe ningún usuario con ese correo electrónico y contraseña. Verifique los datos ingresados.` } },
   //SINGLE ERROR WITH FIXED MESSAGE.
+  sign_in_not_found: { "inicio de sesión": `No existe ningún usuario con ese correo electrónico y contraseña. Verifique los datos ingresados.` },
   req_limit: { errors:{ req_limit: 'Too many requests, please try again later.' } },
   no_session: { errors: { session: "The session has expired. Please, log in again." } },
   //ERROR TO FILL AND "ERRORS" OBJECT (must return a string).
@@ -25,5 +26,4 @@ export const errs = {
   at_least_one: ( dataName, data ) => `${dataName} debe tener al menos ${data}.`,
   cant_contain: ( dataName, data ) => `${dataName} no puede tener ${data}.`,
   existing: ( data ) => `${data} ya está registrado.`,
-  auth: ( dataName ) =>  { return{ [dataName]: `Operación no autorizada.` } }
 };

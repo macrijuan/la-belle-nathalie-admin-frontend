@@ -1,6 +1,5 @@
-import { actioner, actions, config, errs } from "./action_names.js";
+import { actioner, actions, config } from "./action_names.js";
 import { errs as _errs } from "../errors.js";
-import store from "./store.js";
 
 export const adminSignIn = ( data ) => {
   console.log( "adminSignIn requested" );
@@ -25,27 +24,45 @@ export const adminSignIn = ( data ) => {
   };
 };
 
-export const postAppo = ( postData, localData ) =>  async dispatch => {
-  const res = await fetch(`${process.env.SERVER}/appointment/post_appointment`, config(
-    store.getState().user.token, "POST", postData
-  ));
+export const postAppo = ( postData, localData ) =>  async ( dispatch, getState ) => {
+  const token = getState().user.token;
+  const res = await fetch( `${process.env.SERVER}/appointment/post_appointment`, config( token, "POST", postData ) );
   const formatedRes = await res.json().catch( () => 0 );
   return dispatch( actioner( actions.POST, actioner( actions.APPOINTMENT, { res:formatedRes, postData, localData } ) ) );
 };
 
-export const postServ = ( postData ) => async dispatch => {
-  const res = await fetch( `${process.env.SERVER}/service/post_service`, config( store.getState().user.token, "POST", postData ) );
+export const postServ = ( postData ) => async ( dispatch, getState ) => {
+  const token = getState().user.token;
+  const res = await fetch( `${process.env.SERVER}/service/post_service`, config( token, "POST", postData ) );
   if( res ){
     if( res.ok ){
       const id = await res.json();
-      postData.id = id;
-      dispatch( actioner( actions.POST, actioner( actions.SERVICE, postData ) ) );
+      const payload = { ...postData, id };
+      dispatch( actioner( actions.POST, actioner( actions.SERVICE, payload ) ) );
     }else{
       const err = await res.json();
       dispatch( actioner( actions.POST, actioner( actions.SERVICE, err ) ) );
     };
   }else{
     dispatch( actioner( actions.POST, actioner( actions.SERVICE, _errs.conn_server_format ) ) );
+  };
+};
+
+export const postSubServ = ( postData, localData ) => async ( dispatch, getState ) => {
+  const token = getState().user.token;
+  const res = await fetch( `${process.env.SERVER}/sub_service/post_sub_service`, config( token, "POST", postData ) );
+  if( res ){
+    if( res.ok ){
+      const id = await res.json();
+      const payload = { ...postData, id };
+      delete payload.serviceId;
+      dispatch( actioner( actions.POST, actioner( actions.SUB_SERVICE, { body: payload, servInd:localData } ) ) );
+    }else{
+      const err = await res.json();
+      dispatch( actioner( actions.POST, actioner( actions.SUB_SERVICE, err ) ) );
+    };
+  }else{
+    dispatch( actioner( actions.POST, actioner( actions.SUB_SERVICE, _errs.conn_server_format ) ) );
   };
 };
 
@@ -58,8 +75,8 @@ export const postEmp = ( postData ) => async ( dispatch, getState ) => {
       console.log( "THER'S RES" );
       if( res.ok ){
         const id = await res.json();
-        postData.id = id;
-        dispatch( actioner( actions.POST, actioner( actions.EMPLOYEE, postData ) ) );
+      const payload = { ...postData, id };
+      dispatch( actioner( actions.POST, actioner( actions.EMPLOYEE, payload ) ) );
       }else{
         const err = await res.json();
         dispatch( actioner( actions.POST, actioner( actions.EMPLOYEE, err ) ) );

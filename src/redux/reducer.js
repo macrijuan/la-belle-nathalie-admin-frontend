@@ -15,6 +15,7 @@ const initialState = {
   user: {},
   appos: [],
   services: [],
+  sub_services: [],
   employees: [],
   appoReq: 0,
   servReq: 0,

@@ -1,4 +1,5 @@
 import { actions } from "../action_names.js";
+import { errs, errObj } from "../../errors.js";
 
 const getReducer = ( state, { type, payload } ) => {
   // console.log( 'action type:', type );
@@ -16,6 +17,11 @@ const getReducer = ( state, { type, payload } ) => {
         } );
         return { ...state, loader: 0, appos:payload, appoReq: 1 };
       };
+    };
+    case actions.SUB_SERVICE:{
+      if( !payload.errors ){
+        return { ...state, loader: 0, sub_services: payload };
+      } else return { ...state, message: payload.errors }; 
     };
     case actions.SERVICE:{
       if( !payload.errors ){

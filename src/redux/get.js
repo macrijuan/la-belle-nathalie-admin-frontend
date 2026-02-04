@@ -58,6 +58,17 @@ export const getServices = () => async ( dispatch, getState ) => {
   };
 };
 
+export const getSubServices = () => async ( dispatch, getState ) => {
+  const res = await fetch( `${process.env.SERVER}/sub_service/get_sub_services`, config( getState().user.token, 'GET' ) )
+  .catch( err => { console.log( err ); return 0 } );
+  if( res ){
+    const servs = await res.json().catch( () => errs.unknown_server_format );
+    dispatch( actioner( actions.GET, actioner( actions.SUB_SERVICE, servs ) ) );
+  }else{
+    dispatch( actioner( actions.GET, actioner( actions.SUB_SERVICE, errs.conn_server_format ) ) );
+  };
+};
+
 
 export const getAppos = () => async ( dispatch, getState ) => {
   console.log( "appos requested" );

@@ -1,8 +1,8 @@
 import { actions, errs } from "../action_names.js";
 
 function postReducer( state, { type, payload } ){
-  console.log( "action type:", type );
-  if( payload ){ console.log( "payload:" ); console.log( payload ); };
+  // console.log( "action type:", type );
+  // if( payload ){ console.log( "payload:" ); console.log( payload ); };
   switch ( type ) {
     case actions.APPOINTMENT:{
       if( payload.res && !payload.res.errors && payload.res[ 0 ] ){
@@ -58,10 +58,15 @@ function postReducer( state, { type, payload } ){
     };
 
     case actions.SERVICE:{
-      if( payload.errors ){
-        return { ...state, loader: 0, message: payload.errors };
-      };
+      if( payload.errors ) return { ...state, loader: 0, message: payload.errors };
       return { ...state, loader: 0, services:[ ...state.services, { ...payload, sub_services: [] } ] };
+    };
+
+    case actions.SUB_SERVICE:{
+      if( payload.errors ) return { ...state, loader: 0, message: payload.errors };
+      const associatedService = state.services[ payload.servInd ];
+      payload.body.service = { name: associatedService.name, id: associatedService.id };
+      return { ...state, loader: 0, sub_services:[ ...state.sub_services, payload.body ] };
     };
 
     case actions.EMPLOYEE:{

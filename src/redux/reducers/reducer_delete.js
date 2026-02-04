@@ -1,8 +1,8 @@
 import { actions } from "../action_names.js";
 
 function deleteReducer( state, { type, payload } ){
-  // console.log( 'action type:', type );
-  // console.log( "payload:" ); console.log( payload );
+  console.log( 'action type:', type );
+  console.log( "payload:" ); console.log( payload );
   switch ( type ) {
     case actions.APPOINTMENT:{
       if( !payload.errors ){       
@@ -51,6 +51,23 @@ function deleteReducer( state, { type, payload } ){
           else a++;
         };
         return { ...state, loader: 0, services: servs };
+      }else{
+        return { ...state, message: payload.errors };
+      };
+    };
+
+    case actions.SUB_SERVICE:{
+      if( Array.isArray( payload ) ){
+        const sub_servs = [ ...state.sub_services ];
+        payload.forEach( i => {
+          sub_servs[ i ] = 0;
+        });
+        let a = 0;
+        while( a < sub_servs.length ){
+          if( sub_servs[ a ] === 0 ) sub_servs.splice( a, 1 );
+          else a++;
+        };
+        return { ...state, loader: 0, sub_services: sub_servs };
       }else{
         return { ...state, message: payload.errors };
       };
