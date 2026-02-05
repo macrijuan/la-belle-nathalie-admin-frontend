@@ -99,6 +99,7 @@ const EmpBoard = () => {
         <h4>Apellido</h4>
         <h4>Turno</h4>
         <h4>Identificación</h4>
+        <h4>Servicio asignado</h4>
       </div>
       {
         ( emps && emps.length )
@@ -113,6 +114,7 @@ const EmpBoard = () => {
                 <h4>{ e.last_name }</h4>
                 <h4>{ e.shift }</h4>
                 <h4>{ e.identity }</h4>
+                <h4>{ e.service.name}</h4>
               </div>
             );
           } )

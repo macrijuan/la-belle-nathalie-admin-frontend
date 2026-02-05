@@ -71,9 +71,11 @@ function postReducer( state, { type, payload } ){
 
     case actions.EMPLOYEE:{
       if( payload.errors ) return { ...state, loader: 0, message: payload.errors };
-      payload.first_name = payload.first_name.toUpperCase();
-      payload.last_name = payload.last_name.toUpperCase();
-      return { ...state, loader: 0, employees:[ ...state.employees, payload ] };
+      payload.body.first_name = payload.first_name.toUpperCase();
+      payload.body.last_name = payload.last_name.toUpperCase();
+      const associatedService = state.services[ payload.servInd ];
+      payload.body.service = { name: associatedService.name, id: associatedService.id };
+      return { ...state, loader: 0, employees:[ ...state.employees, payload.body ] };
     };
     default:
     console.log( "POST DEFAULT CASE" );
