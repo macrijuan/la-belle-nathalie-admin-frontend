@@ -15,7 +15,7 @@ const SubServBoard = () => {
   const dispatch = useDispatch();
 
   useEffect( () => {
-    if( user.email && !store.getState().servReq ) dispatch( getSubServices() );
+    if( user.email && !store.getState().sub_servReq ) dispatch( getSubServices() );
   }, [ user ] );
 
   const toDelete = useRef( { ids: new Set(), inds:new Set() } );

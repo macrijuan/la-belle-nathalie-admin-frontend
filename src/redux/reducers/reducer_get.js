@@ -1,31 +1,15 @@
 import { actions } from "../action_names.js";
-import { errs, errObj } from "../../errors.js";
+import { errs } from "../../errors.js";
 
 const getReducer = ( state, { type, payload } ) => {
   // console.log( 'action type:', type );
   // console.log( "payload:" ); console.log( payload );
-  switch ( type ) {
-    case actions.APPOINTMENT:{
-      if( payload.errors ){
-        return { ...state, message: payload.errors };
-      }else{
-        payload.forEach( ( a, i ) => {
-          a.id = parseInt( a.id );
-          a.service.id = parseInt( a.service.id );
-          a.sub_services.forEach( ss => { ss.id = parseInt( ss.id ) } );
-          a.employee.id = parseInt( a.employee.id );
-        } );
-        return { ...state, loader: 0, appos:payload, appoReq: 1 };
-      };
-    };
-    case actions.SUB_SERVICE:{
-      if( !payload.errors ){
-        return { ...state, loader: 0, sub_services: payload };
-      } else return { ...state, message: payload.errors }; 
-    };
-    case actions.SERVICE:{
-      if( !payload.errors ){
-        payload.forEach( s => {
+  try{
+    switch ( type ) {
+      
+      case actions.SERVICE:{
+        if( !payload.errors ){
+          payload.forEach( s => {
             s.id = parseInt( s.id );
             s.sub_services.forEach( ss => {
               ss.id = parseInt( ss.id );
@@ -33,28 +17,49 @@ const getReducer = ( state, { type, payload } ) => {
               ss.serviceId = parseInt( ss.serviceId );
             } );
           } );
-        return { ...state, loader: 0, services: payload, servReq: 1 };
-      }else return { ...state, loader: 0, message: payload.errors };
-    };
-    case actions.EMPLOYEE:{
-      if( payload.errors ) return { ...state, loader: 0, message: payload.errors };
-      else return { ...state, loader: 0, employees: payload };
-    };
-    case actions.APPO_CAL:{
-      if( !payload.errors ){
-        if( payload.emps.length ){
-          payload.emps.forEach( e => {
-            e.id = parseInt( e.id );
-            const formatedEmpAppos = {};
-            e.appointments.forEach( a => {
-              if( !formatedEmpAppos[ a.day ] ){
-                formatedEmpAppos[ a.day ] = [ { start_time:a.start_time, end_time:a.end_time } ];
-              }else{
-                const insertIndex = formatedEmpAppos[ a.day ].findIndex( fa => a.start_time < fa.start_time );
-                if( insertIndex === -1 ){
-                  formatedEmpAppos[ a.day ].push( { start_time:a.start_time, end_time:a.end_time } );
+          return { ...state, loader: 0, servReq: 1, services: payload };
+        }else return { ...state, loader: 0, servReq: 1, message: payload.errors };
+      };
+
+      case actions.SUB_SERVICE:{
+        if( !payload.errors ) return { ...state, loader: 0, sub_servReq: 1, sub_services: payload };
+        return { ...state, loader: 0, sub_servReq: 1, message: payload.errors }; 
+      };
+      
+      case actions.EMPLOYEE:{
+        if( payload.errors ) return { ...state, loader: 0, empReq: 1, message: payload.errors };
+        return { ...state, loader: 0, empReq: 1, employees: payload };
+      };
+
+      case actions.APPOINTMENT:{
+        if( payload.errors ){
+          return { ...state, loader: 0, appoReq: 1, message: payload.errors };
+        }else{
+          payload.forEach( ( a, i ) => {
+            a.id = parseInt( a.id );
+            a.service.id = parseInt( a.service.id );
+            a.sub_services.forEach( ss => { ss.id = parseInt( ss.id ) } );
+            a.employee.id = parseInt( a.employee.id );
+          } );
+          return { ...state, loader: 0, appos: payload, appoReq: 1 };
+        };
+      };
+      
+      case actions.APPO_CAL:{
+        if( !payload.errors ){
+          if( payload.emps.length ){
+            payload.emps.forEach( e => {
+              e.id = parseInt( e.id );
+              const formatedEmpAppos = {};
+              e.appointments.forEach( a => {
+                if( !formatedEmpAppos[ a.day ] ){
+                  formatedEmpAppos[ a.day ] = [ { start_time:a.start_time, end_time:a.end_time } ];
                 }else{
-                  formatedEmpAppos[ a.day ].splice( insertIndex, 0, { start_time:a.start_time, end_time:a.end_time } );
+                  const insertIndex = formatedEmpAppos[ a.day ].findIndex( fa => a.start_time < fa.start_time );
+                  if( insertIndex === -1 ){
+                    formatedEmpAppos[ a.day ].push( { start_time:a.start_time, end_time:a.end_time } );
+                  }else{
+                    formatedEmpAppos[ a.day ].splice( insertIndex, 0, { start_time:a.start_time, end_time:a.end_time } );
                 };
               };
             } );
@@ -82,7 +87,7 @@ const getReducer = ( state, { type, payload } ) => {
             } );
           } );
           return payload.servs
-            ?{ ...state, loader: 0, message: 0, services: payload.servs, employees: payload.emps }
+          ?{ ...state, loader: 0, message: 0, services: payload.servs, employees: payload.emps }
           :{ ...state, loader: 0, message: 0, employees: payload.emps,  };
         }else{
           return { ...state, loader: 0, message:{ employees: "Employees not found for this service." } };
@@ -91,11 +96,17 @@ const getReducer = ( state, { type, payload } ) => {
         return { ...state, loader: 0, message:payload.errors };
       };
     };
+
     default:
       console.log( "GET REDUCER: DEFAULT CASE" );
       console.log( 'action type:', type );
       console.log( "payload:" ); console.log( payload );
-    return state;
+      return state;
+    };
+
+  }catch( err ){
+    console.error( err );
+    return { ...state, loader: 0, message: errs.unknown };
   };
 };
 

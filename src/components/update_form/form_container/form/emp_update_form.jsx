@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { employeeUpdate } from "../../../../redux/put.js";
 import { setProp } from "../../../../redux/sync.js";
+import { getServices } from "../../../../redux/get.js";
+// import { normalInput, shiftSelect, serviceIdSelect } from "../../../../form_elements/employee_elements.jsx";
+import { employeeUpdate } from "../../../../redux/put.js";
 import { nameVal, idenVal, shiftVal } from "../../../../validations/employee_val.js";
 
 const EmpUpdateForm = ({ selected, state, data }) => {
   const dispatch = useDispatch();
   return(
-    ( selected.first_name || selected.last_name || selected.identity || selected.shift  )
+    ( selected.first_name || selected.last_name || selected.identity || selected.shift || selected.serviceId )
     ?<form className="ServUpdate-form" onSubmit={ ( e ) => {
           e.preventDefault();
           let errors = {};

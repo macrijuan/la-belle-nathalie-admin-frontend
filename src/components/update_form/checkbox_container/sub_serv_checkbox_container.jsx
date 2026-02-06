@@ -1,32 +1,26 @@
 import React from "react";
-import { normalInput, shiftSelect, serviceIdSelect} from "../../../form_elements/employee_elements.jsx";
+import { normalInput, serviceIdSelect} from "../../../form_elements/.jsx";
 import CheckboxOption from "../checkbox_option/checkbox_option.jsx";
 
-const EmpCheckboxContainer = ({ data, selected, setSelected }) => {
+const SubServCheckboxContainer = ({ data, selected, setSelected }) => {
   return(
     <div className="ServUpdate-optionBox-container">
       <label>Selecciona la información a actualizar</label>
       <div className="ServUpdate-optionBox">
-        <CheckboxOption label="Nombre" selectedKey="first_name"
+        <CheckboxOption label="Nombre" selectedKey="name"
           chekboxChange={ normalInput }
           body={ data.current.body }
           selected={ selected }
           setSelected={ setSelected }
         />
-        <CheckboxOption label="Apellido" selectedKey="last_name"
+        <CheckboxOption label="Duración (minutos)" selectedKey="mins"
           chekboxChange={ normalInput }
           body={ data.current.body }
           selected={ selected }
           setSelected={ setSelected }
         />
-        <CheckboxOption label="Identidad" selectedKey="identity"
+        <CheckboxOption label="Detalle" selectedKey="detail"
           chekboxChange={ normalInput  }
-          body={ data.current.body }
-          selected={ selected }
-          setSelected={ setSelected }
-        />
-        <CheckboxOption label="Turno" selectedKey="shift"
-          chekboxChange={ shiftSelect }
           body={ data.current.body }
           selected={ selected }
           setSelected={ setSelected }
@@ -43,4 +37,4 @@ const EmpCheckboxContainer = ({ data, selected, setSelected }) => {
   );
 };
 
-export default EmpCheckboxContainer;
+export default SubServCheckboxContainer;

@@ -9,7 +9,7 @@ const CheckboxOption = ({ label, selectedKey, chekboxChange, selected, setSelect
       </label>
       <input
         type='checkbox'
-        checked={ selected[ selectedKey ] !== undefined }
+        checked={ selectedKey in selected }
         onChange={ ( e ) => { chekboxChange( e.target.checked, selectedKey, selected, setSelected, body, label ); } }
       />
     </div>

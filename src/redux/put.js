@@ -48,6 +48,27 @@ export const serviceUpdate = ( inds, body ) => async dispatch => {
   };
 };
 
+export const subServUpdate = ( inds, body ) => async ( dispatch, getState ) => {
+  //same inds and body workflow as serviceUpdate
+  try{
+    const token = getState().user.token;
+    const res = await fetch(`${process.env.SERVER}/sub_service/put_sub_services`, config( token, "PUT", body ) )
+    .catch( err => { console.log( err ); return 0; } );
+    if( res ){
+      if( res.ok ){
+        dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, { inds, body } ) ) )
+      }else{
+        const error = await res.json();
+        dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, error ) ) );
+      };
+    }else{
+      dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, _errs.conn_server_format ) ) );
+    };
+  }catch( err ){
+    dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, _errs.unknown_server_format ) ) );
+  };
+};
+
 export const employeeUpdate = ( inds, body ) => async dispatch => {
   //same inds and body workflow as serviceUpdate
   try{

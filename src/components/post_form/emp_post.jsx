@@ -13,9 +13,9 @@ const PostEmp = ({ state, setState }) => {
 
   const data = useRef( {
     body:{
-      first_name: "",
-      last_name: "",
-      identity: "",
+      first_name: "Juan Andrés",
+      last_name: "Macri Ibañez",
+      identity: "17465712",
       shift: "am",
       serviceId: services && services.length ?services[ 0 ].id :null
     },
@@ -25,22 +25,21 @@ const PostEmp = ({ state, setState }) => {
   useEffect( () => {
     if( !services || !services.length ){
       dispatch( setProp( "loader", 1 ) );
-      dispatch( getServices );
-    };
-    if( services && !data.current.body.serviceId ){
+      dispatch( getServices() );
+    }else if( !data.current.body.serviceId ){
       data.current.body.serviceId = services[ 0 ].id
       data.current.selectedServiceIndex = 0
     };
   }, [ services ] );
 
-  return(
+  if( services && services.length ) return(
     <div className="PostServ-container" >
       <form className="PostServ"
         onSubmit={ ( e ) => {
-          e.preventDefault(); console.log( data.current.body );
+          e.preventDefault();
           dispatch( setProp( "loader", 1 ) );
           const err = postEmpVal( data.current.body );
-          if( err ) {
+          if( err ){
             dispatch( setProp( "message", err ) );
             dispatch( setProp( "loader", 0 ) );
           }else{
@@ -62,8 +61,17 @@ const PostEmp = ({ state, setState }) => {
           <option value="am">am</option>
           <option value="pm">pm</option>
         </select>
-        <button className="PostServ-submit">crear</button>
+        <h3>Servicio asignado:</h3>
+        <select onChange = { ( e ) => { data.current.body.serviceId = Number( e.target.value ); } }>
+          { services.map( s => <option key={ s.id } value={ s.id }>{ s.name }</option>) }
+        </select>
+        <button className="PostServ-submit" type='submit'>crear</button>
       </form>
+    </div>
+  );
+  return (
+    <div>
+      <h3>No hay servicios a los que asociar personal.</h3>
     </div>
   );
 };
