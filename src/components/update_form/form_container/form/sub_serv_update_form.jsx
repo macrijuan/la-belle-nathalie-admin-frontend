@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setProp, setProp2 } from "../../../../redux/sync.js";
 import { subServNameVal, subServMinsVal, subServDetailVal, subServServIdlVal } from "../../../../validations/sub_service_val.js";
-import { subUpdate } from "../../../../redux/put.js";
+import { subServUpdate } from "../../../../redux/put.js";
 
 const SubServUpdateForm = ({ selected, state, data }) => {
   const dispatch = useDispatch();
@@ -21,7 +21,6 @@ const SubServUpdateForm = ({ selected, state, data }) => {
           if( "mins" in data.current.body ){
             const mins = subServMinsVal( data.current.body.mins );
             if( mins ) errors = { ...errors, ...mins };
-            else data.current.body.mins = Number( data.current.body.mins );
           };
 
           if( "detail" in data.current.body ){
@@ -32,17 +31,19 @@ const SubServUpdateForm = ({ selected, state, data }) => {
           if( "serviceId" in data.current.body ){
             const serviceId = subServServIdlVal( data.current.body.serviceId );
             if( serviceId ) errors = { ...errors, ...serviceId };
-            else data.current.body.serviceId = Number( data.current.body.serviceId );
           };
 
           if( Object.keys( errors ).length ){
-            dispatch( setProp2( { loader: 0, message: errors} ) );
+            dispatch( setProp2( { loader: 0, message: errors } ) );
           }else{
-            // console.log( { ids: state.update.ids, update: data.current.body } );
+            const body = { ... data.current.body };
+            if( 'mins' in body ) body.mins = Number( body.mins );
+            if( 'serviceId' in body ) body.serviceId = body.serviceId = Number( body.serviceId );;
+            // console.log( { ids: state.update.ids, update: body } );
             // console.log( "Update data submited" );
             // dispatch( setProp( "loader", 0 ) );
             dispatch( setProp( "loader", 1 ) );
-            dispatch( employeeUpdate( state.update.inds, { ids: state.update.ids, update: data.current.body } ) );
+            dispatch( subServUpdate( state.update.inds, { ids: state.update.ids, update: body } ) );
           };
         } }>
         {

@@ -9,6 +9,7 @@ function putReducer( state, { type, payload } ){
       case actions.USER_EMAIL_UPDATE:{
         if( payload ) return { ...state, message:payload };
       };
+
       case actions.SERVICE:{
         if( payload.errors ){
           return { ...state, loader: 0, message: payload.errors };
@@ -20,6 +21,24 @@ function putReducer( state, { type, payload } ){
           return { ...state, loader: 0, services };
         };
       };
+
+      case actions.SUB_SERVICE:{
+        if( payload.errors ){
+          return { ...state, loader: 0, message: payload.errors };
+        }else{
+          const sub_services = [ ...state.sub_services ];
+          if( payload.body.update.serviceId ){
+            const newAssociatedServ = state.services.find( s => s.id === payload.body.update.serviceId );
+            payload.body.update.service = { name: newAssociatedServ.name, id: newAssociatedServ.id };
+            delete payload.body.update.serviceId;
+          };
+          payload.inds.forEach( selectedInd => {
+            sub_services[ selectedInd ] = { ...sub_services[ selectedInd ], ...payload.body.update };
+          });
+          return { ...state, loader: 0, sub_services };
+        };
+      };
+
       case actions.EMPLOYEE:{
         if( payload.errors ){
           return { ...state, loader: 0, message: payload.errors };
@@ -31,15 +50,16 @@ function putReducer( state, { type, payload } ){
           return { ...state, loader: 0, employees };
         };
       };
+
       default:{
         console.log( payload );
         return state;
       };
     };
-    }catch( err ){
-      console.error( err );
-      return { ...state, loader: 0, message: errs.unknown };
-    };
+  }catch( err ){
+    console.error( err );
+    return { ...state, loader: 0, message: errs.unknown };
+  };
 };
 
 export default putReducer;

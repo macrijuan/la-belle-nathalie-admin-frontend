@@ -56,16 +56,16 @@ export const subServUpdate = ( inds, body ) => async ( dispatch, getState ) => {
     .catch( err => { console.log( err ); return 0; } );
     if( res ){
       if( res.ok ){
-        dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, { inds, body } ) ) )
+        dispatch( actioner( actions.PUT, actioner( actions.SUB_SERVICE, { inds, body } ) ) )
       }else{
         const error = await res.json();
-        dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, error ) ) );
+        dispatch( actioner( actions.PUT, actioner( actions.SUB_SERVICE, error ) ) );
       };
     }else{
-      dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, _errs.conn_server_format ) ) );
+      dispatch( actioner( actions.PUT, actioner( actions.SUB_SERVICE, _errs.conn_server_format ) ) );
     };
   }catch( err ){
-    dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, _errs.unknown_server_format ) ) );
+    dispatch( actioner( actions.PUT, actioner( actions.SUB_SERVICE, _errs.unknown_server_format ) ) );
   };
 };
 

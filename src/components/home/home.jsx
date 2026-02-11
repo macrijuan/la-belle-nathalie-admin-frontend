@@ -25,7 +25,7 @@ import "./home.css";
 
 const Home = () => {
 
-  const [ state, setState ] = useState( { board: "sub_serv", post: 0 } );
+  const [ state, setState ] = useState( { board: "appo", post: 0 } );
 
   const dispatch = useDispatch();
   const user = useSelector( state => state.user );

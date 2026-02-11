@@ -6,7 +6,7 @@ import { setProp } from "../../../redux/sync.js";
 import { getSubServices } from "../../../redux/get.js";
 import { sub_servDel } from "../../../redux/delete.js";
 // import Alert from "../../alert/alert.jsx";
-// import ServUpdate from "../../update_form/serv_update.jsx";
+import SubServUpdate from "../../update_form/sub_serv_update.jsx";
 import "./sub_serv_board.css";
 
 const SubServBoard = () => {
@@ -58,11 +58,12 @@ const handleDelete = async ( id, ind ) => {
 
   const handleUpdateList = ( currentToAdd, ind ) => {
     if( !state.update ){
-      setState( { ...state, update: { currentData:[ currentToAdd ], inds:[ ind ] } } );
+      setState( { ...state, update: { currentData: [ currentToAdd ], inds: [ ind ], ids: [ currentToAdd.id ] } } );
     }else{
       setState( { ...state, update: {
         currentData: [ ...state.update.currentData, currentToAdd ],
-        inds: [ ...state.update.inds, ind ]
+        inds: [ ...state.update.inds, ind ],
+        ids: [ ...state.update.ids, currentToAdd.id ]
       } } );
     };
   };
@@ -76,7 +77,7 @@ const handleDelete = async ( id, ind ) => {
   return(
     <div className="Home-board">
       {/* <Alert accept={ () => { ; } } cancel={ () => { ; } } /> */}
-      {/* <ServUpdate state={ state } setState={ setState } /> */}
+      <SubServUpdate state={ state } setState={ setState } />
       {
         state.multipleDeletion
           ?<div className="SubServBoard-selectedToDelete">

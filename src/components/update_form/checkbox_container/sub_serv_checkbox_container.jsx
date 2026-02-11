@@ -1,5 +1,5 @@
 import React from "react";
-import { normalInput, serviceIdSelect} from "../../../form_elements/.jsx";
+import { normalInput, serviceIdSelect } from "../../../form_elements/employee_elements.jsx";
 import CheckboxOption from "../checkbox_option/checkbox_option.jsx";
 
 const SubServCheckboxContainer = ({ data, selected, setSelected }) => {
