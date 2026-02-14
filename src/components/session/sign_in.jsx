@@ -1,24 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setProp } from "../../redux/sync.js";
 import { actioner, actions, errs } from "../../redux/action_names.js";
-import { backgroundManager, getSessionBackgrounds } from "../../images_getter.js";
 import { useNavigate, Link } from "react-router-dom";
 
 import "./sign_in.css";
 
 const SignIn = () => {
 
-  const backgrounds = useRef( null );
-  const [ selectedBackground, setSelectedBackground ] = useState( null );
   const dispatch = useDispatch();
-  
-  useEffect( () => {
-    backgroundManager( getSessionBackgrounds, "session", backgrounds, setSelectedBackground );
-    return () => {
-      if( selectedBackground ) URL.revokeObjectURL( selectedBackground.src );
-    };
-  }, [ window.innerHeight ] );
 
   const [ state, setState ] = useState( { email:"amacri162013@yahoo.com", password:"Password1" } );
   const [ revPass, setRevPas ] = useState( false );
@@ -61,15 +51,6 @@ const SignIn = () => {
   
   return(
     <div className="SignIn">
-      {
-        selectedBackground
-          ?<div className="background-container">
-            <div className="img-container" style={ selectedBackground.style }>
-              <img alt="" src={ selectedBackground.src } style={ selectedBackground.style }/>
-            </div>
-          </div>
-        :null
-      }
       <h1>La Belle Nathalie</h1>
       <h2>Manager</h2>
       <h3>Inicia sesión</h3>

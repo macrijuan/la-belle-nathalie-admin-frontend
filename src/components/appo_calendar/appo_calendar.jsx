@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { appoCalReq, getServEmps }  from "../../redux/get.js";
 import { setProp } from "../../redux/sync.js";
 import { postAppo, userSignIn } from "../../redux/post.js";
-import { backgroundManager, getAppoCalendarBackgrounds } from "../../images_getter.js";
 import SubServList from "./sub_serv_list.jsx";
 import "./appo_calendar.css";
 
@@ -61,19 +60,12 @@ const AppoCalendar = () => {
   const services = useSelector( state => state.services );
   
   const dispatch = useDispatch();
-
-  const backgrounds = useRef( null );
-  const [ selectedBackground, setSelectedBackground ] = useState( null );
   
   useEffect( () => {
     console.log( "useEffect executed" );
     if( !services.length || !employee ){
       dispatch( setProp( "loader", 1 ) );
       dispatch( appoCalReq() );
-    };
-    backgroundManager( getAppoCalendarBackgrounds, "appo_calendar", backgrounds, setSelectedBackground );
-    return () => {
-      if( selectedBackground ) URL.revokeObjectURL( selectedBackground );
     };
   }, [] );
   
@@ -393,15 +385,6 @@ const AppoCalendar = () => {
 
     return(
       <div className="AppoCalendar">
-        {
-          selectedBackground
-            ?<div className="background-container">
-              <div className="img-container" style={ selectedBackground.style }>
-                <img alt="" src={ selectedBackground.src } style={ selectedBackground.style }/>
-              </div>
-            </div>
-          :null
-        }
         <div className="AppoCalendar-topElements">
           <div className="header">
             <Link to="/home" >Atrás</Link>

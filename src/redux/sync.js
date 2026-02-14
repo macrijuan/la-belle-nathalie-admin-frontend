@@ -8,6 +8,3 @@ export const setFilterValues = ( prop, filters ) => actioner( actions.FILTER, ac
 export const setProp = ( prop, data ) => actioner( actions.SYNC, actioner( actions.SET_PROP, { prop, data } ) );
 export const setProp2 = ( data ) => actioner( actions.SYNC, actioner( actions.SET_PROP2, data ) );
 export const setEmailUpdateExpiration = ( data ) => actioner( actions.SYNC, actioner( actions.USER_EMAIL_UPDATE, data ) );
-
-//session
-export const signOut = () => actioner( actions.SYNC, actioner( actions.SESSION ) );

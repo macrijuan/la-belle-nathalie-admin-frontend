@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getServices } from "../../redux/get.js";
+import { getServs } from "../../redux/get.js";
 import { setProp } from "../../redux/sync.js";
 import { postEmp } from "../../redux/post.js";
 import { postEmpVal } from "../../validations/employee_val.js";
@@ -25,7 +25,7 @@ const PostEmp = ({ state, setState }) => {
   useEffect( () => {
     if( !services || !services.length ){
       dispatch( setProp( "loader", 1 ) );
-      dispatch( getServices() );
+      dispatch( getServs() );
     }else if( !data.current.body.serviceId ){
       data.current.body.serviceId = services[ 0 ].id
       data.current.selectedServiceIndex = 0

@@ -4,7 +4,7 @@ import { postSubServ } from "../../redux/post.js";
 import store from "../../redux/store.js";
 import { setProp } from "../../redux/sync.js";
 import { postSubServVal } from "../../validations/sub_service_val.js";
-import { getServices } from "../../redux/get.js";
+import { getServs } from "../../redux/get.js";
 import "./serv_post.css";
 
 const PostSubServ = ({ state, setState }) => {
@@ -25,7 +25,7 @@ const PostSubServ = ({ state, setState }) => {
   useEffect( () => {
     if( !services.length ){
       dispatch( setProp( "loader", 1  ) );
-      dispatch( getServices() );
+      dispatch( getServs() );
     };
     if( services.length && !data.current.body.serviceId ){
       data.current.body.serviceId = services[ 0 ].id;

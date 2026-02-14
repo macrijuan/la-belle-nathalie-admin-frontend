@@ -1,26 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import store from "../../redux/store";
-import { setProp, setProp2, setEmailUpdateExpiration, signOut } from "../../redux/sync.js";
+import { setProp, setProp2, setEmailUpdateExpiration } from "../../redux/sync.js";
 import { Link, useNavigate } from "react-router-dom";
 import EmailUpdate from "./email_update/email_update.jsx";
 import PasswordUpdate from "./password_update/password_update.jsx";
 import UserDataUpdate from "./user_data_update/user_data_update.jsx";
 import { config, errs } from "../../redux/action_names.js";
-import { backgroundManager, getAccountBackgrounds } from "../../images_getter.js";
+import { sessionDel } from "../../redux/delete.js";
 import "./account.css";
 
 const Account = () => {
-
-  const backgrounds = useRef( null );
-  const [ selectedBackground, setSelectedBackground ] = useState( null );
-
-  useEffect( () => {
-    backgroundManager( getAccountBackgrounds, "account", backgrounds, setSelectedBackground );
-    return () => {
-      if( selectedBackground ) URL.revokeObjectURL( selectedBackground );
-    };
-  }, [] );
 
   const dispatch = useDispatch();
   const user = useSelector ( state => state.user );
@@ -90,14 +80,8 @@ const Account = () => {
   const handleAccountDeletion = async () => {
     try{
       dispatch( setProp( "loader", 1 ) );
-      const res = await fetch( `${process.env.SERVER}/user/delete_user`, config( user.token, "DELETE" ) );
-      if( res.ok ){
-        dispatch( signOut() );
-        navigate( "/" );
-      }else{
-        const _err = await res.json();
-        dispatch( setProp2( { message: _err.errors, loader: 0 } ) );
-      };
+      const res = await dispatch( sessionDel() );
+      if( res ) navigate( "/" );
     }catch( err ){
       dispatch( setProp2( { loader: 0, message: errs.unknown } ) );
     };
@@ -107,15 +91,6 @@ const Account = () => {
     switch( accountOrUpd ){
       case "account": return(
         <div className="Account">
-          {
-            selectedBackground
-              ?<div className="background-container">
-                <div className="img-container" style={ selectedBackground.style }>
-                  <img alt="" src={ selectedBackground.src } style={ selectedBackground.style }/>
-                </div>
-              </div>
-            :null
-          }
           <div className="header">
             <h1>Cuenta</h1>
             <Link to="/home">atrás</Link>

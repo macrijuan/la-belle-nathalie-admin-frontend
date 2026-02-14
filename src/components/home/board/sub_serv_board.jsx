@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { errs } from "../../../redux/action_names.js";
 import store from "../../../redux/store.js";
 import { setProp } from "../../../redux/sync.js";
-import { getSubServices } from "../../../redux/get.js";
+import { getServs, getAppos, getEmps, getSubServs } from "../../../redux/get.js";
 import { sub_servDel } from "../../../redux/delete.js";
 // import Alert from "../../alert/alert.jsx";
 import SubServUpdate from "../../update_form/sub_serv_update.jsx";
@@ -15,7 +15,13 @@ const SubServBoard = () => {
   const dispatch = useDispatch();
 
   useEffect( () => {
-    if( user.email && !store.getState().sub_servReq ) dispatch( getSubServices() );
+    if( user.email && !store.getState().sub_servReq ){
+      dispatch( setProp( "loader", 1 ) );
+      dispatch( getServs() );
+      dispatch( getSubServs() );
+      dispatch( getEmps() );
+      dispatch( getAppos() );
+    };
   }, [ user ] );
 
   const toDelete = useRef( { ids: new Set(), inds:new Set() } );

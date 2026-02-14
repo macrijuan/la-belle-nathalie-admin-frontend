@@ -32,16 +32,13 @@ export const sub_servDel = ( ids, inds ) => async ( dispatch, getState ) => {
     .catch( err => { console.error( err ); return 0 } );
     if( res ){
       if( res.ok ){
-        console.log( "got executed 1 " );
         dispatch( actioner( actions.DELETE, actioner( actions.SUB_SERVICE, inds ) ) );
       }else{
-        console.log( "got executed 1.2 " );
         const resBody = await res.json().catch( ( err ) => { console.error( err ); return  errs.unknown_server_format } );
         dispatch( actioner( actions.DELETE, actioner( actions.SUB_SERVICE, resBody ) ) );
       };
       return 1;
     }else{
-      console.log( "got executed 2 " );
       dispatch( actioner( actions.DELETE, actioner( actions.SUB_SERVICE, errs.conn_server_format ) ) );
       return 0;
     };
@@ -94,6 +91,30 @@ export const appoDel = ( ids, appoInd ) => async dispatch => {
   }catch( err ){
     console.error( err );
     dispatch( actioner( actions.DELETE, actioner( actions.APPOINTMENT, errs.unknown_server_format ) ) );
+    return 0;
+  };
+};
+
+export const sessionDel = () => async dispatch => {
+  try{
+    const token  = store.getState().user.token;
+    const res = await fetch( `${process.env.SERVER}/user/sign_out`, config( token, 'DELETE' ) )
+    .catch( err => { console.error( err ); return 0; } );
+    if( res ){
+      if( res.ok ){
+        dispatch( actioner( actions.DELETE, actioner( actions.SESSION ) ) );
+        return 1;
+      }else{
+        const resBody = await res.json();
+        dispatch( actioner( actions.DELETE, actioner( actions.SESSION, resBody ) ) );
+      };
+    }else{
+      dispatch( actioner( actions.DELETE, actioner( actions.SESSION, errs.conn_server_format ) ) );
+    };
+    return 0;
+  }catch( err ){
+    console.error( err );
+    dispatch( actioner( actions.DELETE, actioner( actions.SESSION, errs.unknown_server_format ) ) );
     return 0;
   };
 };

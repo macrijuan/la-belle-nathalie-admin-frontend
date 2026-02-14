@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setProp } from "../../../../redux/sync.js";
-import { getServices } from "../../../../redux/get.js";
+import { getServs } from "../../../../redux/get.js";
 // import { normalInput, shiftSelect, serviceIdSelect } from "../../../../form_elements/employee_elements.jsx";
 import { employeeUpdate } from "../../../../redux/put.js";
 import { nameVal, idenVal, shiftVal } from "../../../../validations/employee_val.js";

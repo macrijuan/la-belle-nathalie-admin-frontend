@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { errs } from "../../../redux/action_names.js";
 import store from "../../../redux/store.js";
 import { setProp } from "../../../redux/sync.js";
-import { getServices } from "../../../redux/get.js";
+import { getServs } from "../../../redux/get.js";
 import { servDel } from "../../../redux/delete.js";
 import Alert from "../../alert/alert.jsx";
 import ServUpdate from "../../update_form/serv_update.jsx";
@@ -15,7 +15,10 @@ const ServBoard = () => {
   const dispatch = useDispatch();
 
   useEffect( () => {
-    if( user.email && !store.getState().servReq ) dispatch( getServices() );
+    if( user.email && !store.getState().servReq ){
+      dispatch( setProp( "loader", 1 ) );
+      dispatch( getServs() );
+    };
   }, [ user ] );
 
   const toDelete = useRef( { servIds: new Set(), servInds:new Set() } );

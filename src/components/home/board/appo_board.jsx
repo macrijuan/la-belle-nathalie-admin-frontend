@@ -6,7 +6,7 @@ import { setProp } from "../../../redux/sync.js";
 import { getAppos } from "../../../redux/get.js";
 import { appoDel } from "../../../redux/delete.js";
 import Alert from "../../alert/alert.jsx";
-// import EmpUpdate from "../../update_form/emp_update.jsx";
+// import AppoUpdate from "../../update_form/appo_update.jsx";
 import "./appo_board.css";
 
 const AppoBoard = () => {
@@ -81,7 +81,7 @@ const AppoBoard = () => {
   return(
     <div className="Home-board">
       <Alert accept={ () => { ; } } cancel={ () => { ; } } />
-      {/* <EmpUpdate state={ state } setState={ setState } /> */}
+      {/* <AppoUpdate state={ state } setState={ setState } /> */}
       {
         state.multipleDeletion
           ?<div className="ServBoard-selectedToDelete">

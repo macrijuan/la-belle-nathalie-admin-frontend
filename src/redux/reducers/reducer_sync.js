@@ -13,14 +13,6 @@ function syncReducer( state, { type, payload } ){
           if( typeof payload === "number" ) return { ...state, user:{ ...state.user, email_update_expiration: parseInt( payload ) } };
           if( !payload ) return { ...state, user: { ...state.user, email_update_expiration: null, possible_new_email: false } };
       return { ...state, user:{ ...state.user, ...payload } };
-      case actions.SESSION: return {
-        loader: 0,
-        message: 0,
-        user: {},
-        appos: [],
-        services: [],
-        employees: []
-      };
       default:{
         console.log( "DEFAULT CASE" );
         console.log( "type:", type );

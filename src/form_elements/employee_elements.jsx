@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import store from "../redux/store.js";
-import { getServices } from "../redux/get.js";
+import { getServs } from "../redux/get.js";
 import { setProp } from "../redux/sync.js";
 
 export const normalInput = ( shouldAdd, key, selected, setSelected, body, text ) => {
@@ -57,7 +57,7 @@ const EmpServIdUpdField = ( { prop, data } ) => {
   useEffect( () => {
     if( !servReq ){
       dispatch( setProp( "loader", 1 ) );
-      dispatch( getServices() );
+      dispatch( getServs() );
     };
     if( services && services.length ){
       data.current.body[ prop ] = services[ 0 ].id;

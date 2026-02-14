@@ -1,7 +1,7 @@
 import { actioner, actions, filtersToURL, config } from "./action_names.js";
 import { errs } from "../errors.js";
 
-export const getServices = () => async ( dispatch, getState ) => {
+export const getServs = () => async ( dispatch, getState ) => {
   const res = await fetch( `${process.env.SERVER}/service/get_services`, config( getState().user.token, 'GET' ) )
   .catch( err => { console.log( err ); return 0 } );
   if( res ){
@@ -12,7 +12,7 @@ export const getServices = () => async ( dispatch, getState ) => {
   };
 };
 
-export const getSubServices = () => async ( dispatch, getState ) => {
+export const getSubServs = () => async ( dispatch, getState ) => {
   const res = await fetch( `${process.env.SERVER}/sub_service/get_sub_services`, config( getState().user.token, 'GET' ) )
   .catch( err => { console.log( err ); return 0 } );
   if( res ){
