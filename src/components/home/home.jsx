@@ -11,7 +11,7 @@ import "./home.css";
 
 const Home = () => {
 
-  const [ state, setState ] = useState( { board: "sub_serv", post: 0 } );
+  const [ state, setState ] = useState( { board: "emp", post: 0 } );
 
   const dispatch = useDispatch();
   const user = useSelector( state => state.user );
@@ -50,10 +50,10 @@ const Home = () => {
       <div style={{ marginTop: "1em" }}>
         <label className="Home-label">Click para cambiar la información del tablero:</label>
         <select onChange={ ( e ) => { setState( { ...state, board: e.target.value } ); } }>
+          <option value="emp" >empleados</option>
           <option value="sub_serv" >sub servicios</option>
           <option value="serv" >servicios</option>
           <option value="appo" >turnos</option>
-          <option value="emp" >empleados</option>
         </select>
       </div>
       <BoardSelector selectedBoard={ state.board } />

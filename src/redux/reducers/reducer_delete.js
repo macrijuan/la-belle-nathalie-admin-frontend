@@ -102,9 +102,24 @@ function deleteReducer( state, { type, payload } ){
       
       case actions.EMPLOYEE:{
         if( Array.isArray( payload ) ){
-          const emps = [ ...state.employees ];
-          arrItemDeletion( emps, payload );
-          return { ...state, loader: 0, employees: emps };
+          const updatedKeys = {};
+          if( state.appos.length ){
+            updatedKeys.appos = [ ...state.appos ];
+            payload.forEach( empToDelInd => {
+              let appoInd = 0;
+              while( appoInd < updatedKeys.appos.length ){
+                if( updatedKeys.appos[ appoInd ].employee.id === state.employees[ empToDelInd ].id ){
+                  updatedKeys.appos.splice( appoInd, 1 );
+                }else{
+                  appoInd++;
+                };
+              };
+            } );
+          };
+
+          updatedKeys.employees = [ ...state.employees ];
+          arrItemDeletion( updatedKeys.employees, payload );
+          return { ...state, loader: 0, ...updatedKeys };
         }else{
           return { ...state, loader: 0, message: payload.errors };
         };
