@@ -17,10 +17,12 @@ const initialState = {
   sub_services: [],
   employees: [],
   appos: [],
+  users: [],
   servReq: 0,
   sub_servReq: 0,
   empReq: 0,
-  appoReq: 0
+  appoReq: 0,
+  userReq: 0
 };
 
 function rootReducer( state = initialState, { payload, type } ){

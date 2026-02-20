@@ -39,19 +39,26 @@ export const getEmps = () => async ( dispatch, getState ) => {
 };
 
 export const getAppos = () => async ( dispatch, getState ) => {
-  console.log( "appos requested" );
   try{
-    const res = await fetch( `${process.env.SERVER}/appointment/get_appointments`, config( getState().user.token, 'GET' )
-  );
-  dispatch( actioner( actions.GET, actioner( actions.APPOINTMENT, await res.json() ) ) );
-}catch( err ){
-  console.log( err );
-};
+    const token = getState().user.token;
+    const res = await fetch( `${process.env.SERVER}/appointment/get_appointments`, config( token, 'GET' ) );
+    if( res ){
+      const body = await res.json();
+      dispatch( actioner( actions.GET, actioner( actions.APPOINTMENT, body ) ) );
+    }else{
+      dispatch( actioner( actions.GET, actioner( actions.APPOINTMENT, errs.conn_server_format ) ) );
+    };
+  }catch( err ){
+    console.error( err );
+    dispatch( actioner( actions.GET, actioner( actions.APPOINTMENT, errs.unknown_server_format ) ) );
+  };
 };
 
-export const users = () => async( dispatch, getState )=>{
+export const getUsers = () => async( dispatch, getState )=>{
   try{
-    const res = await fetch( `${process.env.SERVER}/user/get_users`, config( getState().user.token, 'GET' ) );
+    const token = getState().user.token;
+    const res = await fetch( `${process.env.SERVER}/user/get_users`, config( token, 'GET' ) )
+    .catch( err => { console.error( err ); return 0; } );
     if( res ){
       const body = await res.json();
       dispatch( actioner( actions.GET, actioner( actions.USER, body ) ) );
@@ -59,30 +66,76 @@ export const users = () => async( dispatch, getState )=>{
       dispatch( actioner( actions.GET, actioner( actions.USER, errs.conn_server_format ) ) );
     };
   }catch( err ){
+    console.error( err );
     dispatch( actioner( actions.GET, actioner( actions.USER, errs.unknown_server_format ) ) );
-    throw new Error( err );
   };
 };
 
 export const appoCalReq = () => async ( dispatch, getState ) => {
-  const servsReq = await fetch( `${process.env.SERVER}/service/get_services`, config( getState().user.token, 'GET' ) );
-  const servs = await servsReq.json().catch( () => errs.conn_server_format );
-  if( !servs.errors ){
-    if( servs.length ){
-      const empsReq = await fetch( `${process.env.SERVER}/employee/get_employees?service=${servs[ 0 ].id}`, config( token, 'GET' ) );
-      const emps = await empsReq.json().catch( () => errs.conn_server_format );
-      if( !emps.errors ){
-        dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, { servs, emps } ) ) );
+  try{
+    const token = getState().user.token;
+    const res = await Promise.all( [
+      fetch( `${process.env.SERVER}/user/get_users`, config( token, 'GET' ) ).catch( err => { console.error( err ); return 0; } ),
+      fetch( `${process.env.SERVER}/service/get_services`, config( token, 'GET' ) ).catch( err => { console.error( err ); return 0; } ),
+    ] );
+
+    const okData = {};
+    const errors = {};
+
+    if( res[ 0 ] ){
+      const users = await res[ 0 ].json().catch( err => { console.error( err ); return errs.unknown_server_format } );
+      if( !users.errors ){
+        okData.users = users;
       }else{
-        dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, emps ) ) );
+        errors.usuarios = Object.values( users.errors )[ 0 ];
       };
     }else{
-      dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, { errors:{ services:"Services not found." } } ) ) );
+      errors.usuarios = errs.conn[ "conexión" ];
     };
-  }else{
-    dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, servs ) ) );
+
+    if( res[ 1 ] ){
+      const servs = await res[ 1 ].json().catch( err => { console.error( err ); return errs.unknown_server_format; } );
+      if( !servs.errors ){
+        okData.services = servs;
+        const empsRes = await fetch( `${process.env.SERVER}/employee/get_employees?service=${servs[ 0 ].id}`, config( token, 'GET' ) )
+        .catch( err => { console.error( err ); return 0; } );
+        if( empsRes ){
+          const emps = await empsRes.json().catch( err => { console.error( err ); return errs.unknown_server_format } );
+          if( !emps.errors ){
+            okData.employees = emps;
+          }else{
+            errors.empleados = Object.values( emps.errors )[ 0 ];
+          };
+        }else{
+          errors.empleados = errs.conn[ "conexión" ];
+        };
+      }else{
+        errors.servicios = Object.values( servs.errors )[ 0 ];
+      };
+    }else{
+      errors.servicios = errs.conn[ "conexión" ];
+    };
+
+    dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, { errors, okData } ) ) );
+
+  }catch( err ){
+    console.error( err );
+    dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, errs.unknown_server_format ) ) );
   };
 };
+
+
+const res = {
+  errors:{
+    unknown:"An unknown error occured."
+  }
+};
+
+const message = {
+  servicios: "An unknown error occured.",
+  usuarios: "Falló la conexión al servidor."
+};
+
 
 export const getServEmps = ( serviceId ) => async ( dispatch ) => {
   const token = store.getState().user.token;

@@ -2,9 +2,11 @@ import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { appoCalReq, getServEmps }  from "../../redux/get.js";
+import store from "../../redux/store.js";
 import { setProp } from "../../redux/sync.js";
 import { postAppo, userSignIn } from "../../redux/post.js";
 import SubServList from "./sub_serv_list.jsx";
+import UserList from "./user_list.jsx";
 import "./appo_calendar.css";
 
 const months = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ];
@@ -46,24 +48,27 @@ const AppoCalendar = () => {
 
   const [ state, setState ] = useState( {
     //USE THIS INFO TO COMPARE WITH THE APPOINTMENTS OF THE SELECTED EMPLOYEE
-    year:currentDate.current.getUTCFullYear(),
-    month:currentDate.current.getUTCMonth(), //WARNING: 0 index based
-    day:currentDate.current.getUTCDate(),
-    service:0,
-    employee:0,
-    displayCalendar:0,
-    displayApplyBtn:0
+    year: currentDate.current.getUTCFullYear(),
+    month: currentDate.current.getUTCMonth(), //WARNING: 0 index based
+    day: currentDate.current.getUTCDate(),
+    service: 0,
+    employee: 0,
+    displayCalendar: 0,
+    displayApplyBtn: 0,
+    displayUserList: 0
   } );
 
   const employees = useSelector( state => state.employees );
   const employee = employees[ state.employee ];
   const services = useSelector( state => state.services );
+  const users = useSelector( state => state.users );
   
   const dispatch = useDispatch();
   
   useEffect( () => {
     console.log( "useEffect executed" );
-    if( !services.length || !employee ){
+    const { servReq, empReq, userReq } = store.getState();
+    if( !servReq || !empReq || !userReq ){
       dispatch( setProp( "loader", 1 ) );
       dispatch( appoCalReq() );
     };
@@ -81,6 +86,7 @@ const AppoCalendar = () => {
     },
     //appo data
     sub_servs:[],
+    user: null,
     formattedAppoDur:0,
     appoDurationInMins:0,
     //emp data
@@ -148,7 +154,7 @@ const AppoCalendar = () => {
     console.log( "Submited!" );
     dispatch( setProp( "loader", 0 ) );
     dispatch( postAppo(
-      { day, employeeId: employeeId, sub_servs:sub_servs.map( ss => ss.id ) },
+      { day, employeeId: employeeId, sub_servs:sub_servs.map( ss => ss.id ), user: dateData.current.user.id },
       {
         service:{ id: services[ state.service ].id , name:services[ state.service ].name },
         sub_servs,
@@ -159,7 +165,12 @@ const AppoCalendar = () => {
       }
     ) );
   };
-  if( employee ){
+  if( !services.length || !employee || !users.length ) return(
+    <div className="AppoCalendar-error">
+      <Link to="/home">volver</Link>
+    </div>
+  );
+  else{//IMPLEMENT HERE THE LOGIC --> && !days.length
     if( !dateData.current.empShiftStart ){
       dateData.current.empShiftStart = toMins( services[ state.service ][ employee.shift ][ 0 ] );
       dateData.current.empShiftEnd = toMins( services[ state.service ][ employee.shift ][ 1 ] );
@@ -385,6 +396,7 @@ const AppoCalendar = () => {
 
     return(
       <div className="AppoCalendar">
+        <UserList shouldDisplay = { state.displayUserList } dateData = { dateData.current } />
         <div className="AppoCalendar-topElements">
           <div className="header">
             <Link to="/home" >Atrás</Link>
@@ -435,7 +447,6 @@ const AppoCalendar = () => {
       </div>
     );
   };
-  return null;
 };
 
 export default AppoCalendar;

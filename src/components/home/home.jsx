@@ -28,7 +28,8 @@ const Home = () => {
         dispatch( setProp( "loader", 1 ) );
         const res = await dispatch( sessionDel() );
         if( res ) navigate( "/" );
-      }
+      },
+      navToAppoCal: () => { dispatch( setProp( "loader", 1 ) ); navigate( "/appo_calendar" ); }
     }
   } );
 
@@ -45,7 +46,7 @@ const Home = () => {
         <button onClick={ () => { setState( { ...state, post:"emp" } ); } }>agregar empleado</button>
         <button onClick={ () => { setState( { ...state, post:"serv" } ); } }>agregar servicio</button>
         <button onClick={ () => { setState( { ...state, post:"sub_serv" } ); } }>agregar sub servicio</button>
-        <button>agregar turno</button>
+        <button onClick={ () => {  } }>agregar turno</button>
       </div>
       <div style={{ marginTop: "1em" }}>
         <label className="Home-label">Click para cambiar la información del tablero:</label>

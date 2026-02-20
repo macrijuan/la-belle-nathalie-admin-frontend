@@ -60,40 +60,50 @@ const getReducer = ( state, { type, payload } ) => {
                     formatedEmpAppos[ a.day ].push( { start_time:a.start_time, end_time:a.end_time } );
                   }else{
                     formatedEmpAppos[ a.day ].splice( insertIndex, 0, { start_time:a.start_time, end_time:a.end_time } );
+                  };
                 };
-              };
-            } );
-            //adds appos of user to all emps to avoid booking during user appos
-            state.appos.forEach( a => {
-              if( !formatedEmpAppos[ a.day ] ){
-                formatedEmpAppos[ a.day ] = [ { start_time:a.start_time, end_time:a.end_time } ]
-              }else{
-                const insertIndex = formatedEmpAppos[ a.day ].findIndex( fa => a.start_time < fa.start_time );
-                if( insertIndex === -1 ){
-                  formatedEmpAppos[ a.day ].push( { start_time:a.start_time, end_time:a.end_time } );
+              } );
+              //adds appos of user to all emps to avoid booking during user appos
+              state.appos.forEach( a => {
+                if( !formatedEmpAppos[ a.day ] ){
+                  formatedEmpAppos[ a.day ] = [ { start_time:a.start_time, end_time:a.end_time } ]
                 }else{
-                  formatedEmpAppos[ a.day ].splice( insertIndex, 0, { start_time:a.start_time, end_time:a.end_time } );
+                  const insertIndex = formatedEmpAppos[ a.day ].findIndex( fa => a.start_time < fa.start_time );
+                  if( insertIndex === -1 ){
+                    formatedEmpAppos[ a.day ].push( { start_time:a.start_time, end_time:a.end_time } );
+                  }else{
+                    formatedEmpAppos[ a.day ].splice( insertIndex, 0, { start_time:a.start_time, end_time:a.end_time } );
+                  };
                 };
-              };
+              } );
+              e.appointments = formatedEmpAppos;
             } );
-            e.appointments = formatedEmpAppos;
-          } );
-          payload.servs.forEach( s => {
-            s.id = parseInt( s.id );
-            s.sub_services.forEach( ss => {
-              ss.id = parseInt( ss.id );
-              ss.mins = parseInt( ss.mins );
-              ss.serviceId = parseInt( ss.serviceId );
+            payload.servs.forEach( s => {
+              s.id = parseInt( s.id );
+              s.sub_services.forEach( ss => {
+                ss.id = parseInt( ss.id );
+                ss.mins = parseInt( ss.mins );
+                ss.serviceId = parseInt( ss.serviceId );
+              } );
+
             } );
-          } );
-          return payload.servs
-          ?{ ...state, loader: 0, message: 0, services: payload.servs, employees: payload.emps }
-          :{ ...state, loader: 0, message: 0, employees: payload.emps,  };
+            return payload.servs
+            ?{ ...state, loader: 0, message: 0, services: payload.servs, employees: payload.emps, servReq: 1, empReq: 1 }
+            :{ ...state, loader: 0, message: 0, employees: payload.emps, empReq: 1  };
+          }else{
+            return { ...state, loader: 0, message:{ employees: "Employees not found for this service." } };
+          };
         }else{
-          return { ...state, loader: 0, message:{ employees: "Employees not found for this service." } };
+          return { ...state, loader: 0, message: payload.errors, ...payload.requested };
         };
-      }else{
-        return { ...state, loader: 0, message:payload.errors };
+      };
+
+    case actions.USER: {
+      if( !payload.errors ){
+        payload.forEach( u => u.id = Number( u.id ) );
+        return { ...state, loader: 0, users: payload, userReq: 1 }
+      }else{ 
+        return { ...state, loader: 0, message: payload.errors, userReq: 1 }
       };
     };
 
