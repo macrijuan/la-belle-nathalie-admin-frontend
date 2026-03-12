@@ -1,41 +1,28 @@
 .AppoCalendar{
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  box-sizing: border-box;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
   padding: 2%;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
+
 .AppoCalendar h3{
   width: fit-content;
   background-color: rgba(255, 255, 255, 0.8);;
 }
 
-.AppoCalendar-topElements{
-  display: flex;
-  flex-direction: column;
+.AppoCalendar-header{
+  width: 100%;
+  margin-bottom: 1em;
+  background-color: rgb( 213, 104, 252 );
 }
-.AppoCalendar-topElements h2{
-  width: fit-content;
-  background-color: rgba(255, 255, 255, 0.8);;
-}
-.AppoCalendar-topElements .header{
-  position: relative;
-  background-color: rgba( 213, 104, 252, 0.8 );
-}
-.AppoCalendar-topElements .header a{
-  position: absolute;
-  margin-top: 0.5em;
-  margin-left: 0.5em;
-}
-.AppoCalendar-topElements .header h1{
+.AppoCalendar-header h1{
   text-align: center;
   color: rgb(255, 255, 255);
-}
-
-.AppoCalendar-Close{
-  align-self: flex-end;
 }
 
 .AppoCalendar-EmployeList{
@@ -47,10 +34,11 @@
   width: fit-content;
   background-color: rgb(255, 255, 255, 0.7);
 }
-.AppoCalendar-header{
+
+.AppoCalendar-tableHeader{
   width: 100%;
 }
-.AppoCalendar-header p{
+.AppoCalendar-tableHeader p{
   width: 9.5%;
   height: 20%;
   margin: 1%;

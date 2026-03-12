@@ -29,7 +29,7 @@ const Home = () => {
         const res = await dispatch( sessionDel() );
         if( res ) navigate( "/" );
       },
-      navToAppoCal: () => { dispatch( setProp( "loader", 1 ) ); navigate( "/appo_calendar" ); }
+      navToAppoCal: () => { navigate( "/appo_cal" ); }
     }
   } );
 
@@ -46,7 +46,7 @@ const Home = () => {
         <button onClick={ () => { setState( { ...state, post:"emp" } ); } }>agregar empleado</button>
         <button onClick={ () => { setState( { ...state, post:"serv" } ); } }>agregar servicio</button>
         <button onClick={ () => { setState( { ...state, post:"sub_serv" } ); } }>agregar sub servicio</button>
-        <button onClick={ () => {  } }>agregar turno</button>
+        <button onClick={ () => { data.current.handlers.navToAppoCal(); } }>agregar turno</button>
       </div>
       <div style={{ marginTop: "1em" }}>
         <label className="Home-label">Click para cambiar la información del tablero:</label>
@@ -57,8 +57,8 @@ const Home = () => {
           <option value="appo" >turnos</option>
         </select>
       </div>
-      <BoardSelector selectedBoard={ state.board } />
       <PostFormSelector state={ state } setState={ setState } />
+      <BoardSelector selectedBoard={ state.board } />
     </div>
   );
 };

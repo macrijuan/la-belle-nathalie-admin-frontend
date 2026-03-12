@@ -1,10 +1,14 @@
+.UserList-display{
+  margin-top: 1em;
+}
+
 .UserList-container{
   box-sizing: border-box;
   position: absolute;
-  width: 100vw;
-  width: 100dvw;
-  height: 100vh;
-  height: 100dvh;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -15,6 +19,7 @@
 
 .UserList{
   width: 100%;
+  padding: 1em;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -24,26 +29,38 @@
 
 .UserList-Header{
   width: 100%;
-  background-color: rgb(128, 128, 128);
+  margin-bottom: 1em;
+  background-color: rgb( 213, 104, 252 );
 }
 
 .UserList-Header h1{
-  color: black;
+  text-align: center;
+  color: white;
+}
+
+.UserList-close{
+  margin-block: 1em;
 }
 
 .UserList-table{
   width: 100%;
-  overflow-x: auto;
 }
 
 .UserList-row{
-  width: 100%;
+  width: 99.7%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  margin:0.3em;
+  margin: 0.3em;
+}
+
+.UserList-row:nth-child(even) {
+  background-color: rgb(255, 175, 232);
 }
 
 .UserList-row h5{
   width: 25%;
+  word-break: keep-all;
+  word-wrap: none;
+  overflow-x: auto;
 }

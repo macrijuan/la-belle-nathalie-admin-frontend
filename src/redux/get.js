@@ -74,10 +74,12 @@ export const getUsers = () => async( dispatch, getState )=>{
 export const appoCalReq = () => async ( dispatch, getState ) => {
   try{
     const token = getState().user.token;
-    const res = await Promise.all( [
-      fetch( `${process.env.SERVER}/user/get_users`, config( token, 'GET' ) ).catch( err => { console.error( err ); return 0; } ),
-      fetch( `${process.env.SERVER}/service/get_services`, config( token, 'GET' ) ).catch( err => { console.error( err ); return 0; } ),
-    ] );
+    const reqsToMake = [];
+    const { users, services, employees } = getState();
+    if( !( "id" in users ) ) reqsToMake.push( fetch( `${process.env.SERVER}/user/get_users`, config( token, 'GET' ) ).catch( err => { console.error( err ); return 0; } ) );
+    if( !services.length ) reqsToMake.push( fetch( `${process.env.SERVER}/user/get_services`, config( token, 'GET' ) ).catch( err => { console.error( err ); return 0; } ) );
+    if( !employees.length ) reqsToMake.push( fetch( `${process.env.SERVER}/user/get_users`, config( token, 'GET' ) ).catch( err => { console.error( err ); return 0; } ) );
+    const res = await Promise.all( reqsToMake );
 
     const okData = {};
     const errors = {};
@@ -123,19 +125,6 @@ export const appoCalReq = () => async ( dispatch, getState ) => {
     dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, errs.unknown_server_format ) ) );
   };
 };
-
-
-const res = {
-  errors:{
-    unknown:"An unknown error occured."
-  }
-};
-
-const message = {
-  servicios: "An unknown error occured.",
-  usuarios: "Falló la conexión al servidor."
-};
-
 
 export const getServEmps = ( serviceId ) => async ( dispatch ) => {
   const token = store.getState().user.token;
