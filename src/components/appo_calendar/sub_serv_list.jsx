@@ -3,12 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { setProp } from "../../redux/sync";
 import "./sub_serv_list.css";
 
-const SubServList = ( { state, setState, dateData, shiftDuration } ) => {
+const SubServList = ( { selServ, services, setState, dateData, shiftDuration } ) => {
 
   const dispatch = useDispatch();
   const [ flag, reRender ] = useState( true );
-
-  const services = useSelector( state => state.services );
 
   const handleClick = (ss) => {
     const match = dateData.current.sub_servs.findIndex( inc_sub_serv => inc_sub_serv.id === ss.id );
@@ -25,18 +23,17 @@ const SubServList = ( { state, setState, dateData, shiftDuration } ) => {
       dateData.current.appoDurationInMins -= parseInt( ss.mins );
       dateData.current.formattedAppoDur =`${Math.floor( dateData.current.appoDurationInMins / 60 )} Hs, ${dateData.current.appoDurationInMins % 60} Mins`;
     };
-    if( !dateData.current.sub_servs.length ) setState( { ...state, displayCalendar:0, displayApplyBtn:0 } );
-    else setState( { ...state, displayCalendar:1, displayApplyBtn:1 } );
+    if( !dateData.current.sub_servs.length ) setState( curState => ( { ...curState, displayCalendar:0, displayApplyBtn:0 } ) );
+    else setState( curState => ( { ...curState, displayCalendar:1, displayApplyBtn:1 } ) );
     reRender( !flag );
   };
 
-  return(
-    <div>
+  if( services.length ) return(
+    // <div>
       <div className="SubServList">
-        {/* <div className="rounded-shadow"> */}
           <h4>Sub servicios:</h4>
           {
-            services[ state.service ].sub_services.map( ( ss, ssi ) => (
+            services[ selServ ].sub_services.map( ( ss, ssi ) => (
               <div
                 className={ dateData.current.sub_servs.find( _ss => _ss.id === ss.id ) ?"clicked" :"item" }
                 value={ ss.name }
@@ -49,15 +46,15 @@ const SubServList = ( { state, setState, dateData, shiftDuration } ) => {
           }
         {/* </div> */}
       </div>
-      <div className="SubServList-mins">
-        <label>Minutos de trabajo del empleado:</label>
-        <p>{ shiftDuration }</p>
-        <br></br>
-        <label>Minutos de tu cita:</label>
-        <p>{ dateData.current.appoDurationInMins }</p>
-      </div>
-    </div>
   );
 };
 
-export default SubServList;
+export default React.memo( SubServList );
+
+  // <div className="SubServList-mins">
+  //   <label>Minutos de trabajo del empleado:</label>
+  //   <p>{ shiftDuration }</p>
+  //   <br></br>
+  //   <label>Minutos de tu cita:</label>
+  //   <p>{ dateData.current.appoDurationInMins }</p>
+  // </div>

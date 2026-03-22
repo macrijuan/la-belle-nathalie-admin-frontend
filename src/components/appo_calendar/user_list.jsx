@@ -1,30 +1,28 @@
 import React, { useEffect, useState } from "react";
 import store from "../../redux/store.js";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setProp } from "../../redux/sync.js";
-import { getUsers } from "../../redux/get.js";
+import { getUsers, handleUserApply } from "./calendar_state_managers.js";
 import "./user_list.css";
 
 
-const UserList = ({ dateData }) => {
+const UserList = ({ users, selectedUser, setState }) => {
+  console.log( "UserList re-executed" );
 
   const [ display, setDisplay ] = useState( 0 );
 
   const dispatch = useDispatch();
 
   useEffect( () => {
-    const userReq = store.getState().userReq;
-    if( !userReq ){
+    console.log( "UserList -> useEffect executed" );
       dispatch( setProp( "loader", 1 ) );
-      dispatch( getUsers() );
-    };
+      getUsers( setState, dispatch );
   }, [] );
-
-  const users = useSelector( state => state.users );
   
   if( display ){
-    console.log( "render user list" );
-    if( users.length ) return(
+    if( users.length ){
+
+      return(
       <div className="UserList-container">
         <div className="UserList">
           <div className="UserList-Header">
@@ -33,10 +31,10 @@ const UserList = ({ dateData }) => {
 
           <button className="UserList-close" onClick={ () => { setDisplay( 0 ); } }>cerrar</button>
 
-          <label>Usuario seleccionado: { dateData.user ?`${dateData.user.first_name} ${dateData.user.last_name} (${dateData.user.id_ref})` :"Ninguno" }</label>
+          <label>Usuario seleccionado: { selectedUser ?`${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.id_ref})` :"Ninguno" }</label>
 
           <div className="UserList-table">
-            <div className="UserList-row">
+            <div className="UserList-tableHeader">
               <h5>Nombre</h5>
               <h5>Apellido</h5>
               <h5>Últimos 6 números del DNI</h5>
@@ -44,11 +42,11 @@ const UserList = ({ dateData }) => {
             </div>
 
             {
-              users.map( ( u, i ) => (
+              users.map( ( u ) => (
                 <div
                   key={ u.id }
                   className="UserList-row" 
-                  onClick={ () => { dateData.user = u; } }
+                  onClick={ () => { handleUserApply( u, setState, dispatch ); } }
                 >
                   <h5>{ u.first_name }</h5>
                   <h5>{ u.last_name }</h5>
@@ -61,6 +59,7 @@ const UserList = ({ dateData }) => {
         </div>
       </div>
     );
+    };
     return(
       <h3>No hay usuarios a los que asignar un turno.</h3>
     );
@@ -68,7 +67,4 @@ const UserList = ({ dateData }) => {
   return <button className="UserList-display" onClick={ () => { setDisplay( 1 ); } }>Seleccionar usuario</button>;
 };
 
-export default UserList;
-
-
-console.log( 0%2 );
+export default React.memo( UserList );

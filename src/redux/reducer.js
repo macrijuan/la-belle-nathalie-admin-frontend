@@ -13,16 +13,16 @@ const initialState = {
   message: 0,
   alert: 0,
   user: {},
-  services: [],
-  sub_services: [],
-  employees: [],
-  appos: [],
   users: [],
+  services: [],
+  employees: [],
+  sub_services: [],
+  appos: [],
+  userReq: 0,
   servReq: 0,
-  sub_servReq: 0,
   empReq: 0,
-  appoReq: 0,
-  userReq: 0
+  sub_servReq: 0,
+  appoReq: 0
 };
 
 function rootReducer( state = initialState, { payload, type } ){

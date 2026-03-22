@@ -1,10 +1,12 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { appoCalReq, getServEmps, getServs }  from "../../redux/get.js";
+// import { getServs }  from "../../redux/get.js";
 import store from "../../redux/store.js";
 import { setProp } from "../../redux/sync.js";
-import { postAppo, userSignIn } from "../../redux/post.js";
+import { postAppo } from "../../redux/post.js";
+import ServList from "./serv_list.jsx";
+import EmpList from "./emp_list.jsx";
 import SubServList from "./sub_serv_list.jsx";
 import UserList from "./user_list.jsx";
 import "./appo_calendar.css";
@@ -51,70 +53,48 @@ const AppoCalendar = () => {
     year: currentDate.current.getUTCFullYear(),
     month: currentDate.current.getUTCMonth(), //WARNING: 0 index based
     day: currentDate.current.getUTCDate(),
-    service: 0,
-    employee: 0,
+    user: null,
+    service: null,
+    employee: null,
+    users: [],
+    employees: [],
+    sub_services: [],
+    userReq: 0,
+    empReq: 0,
     displayCalendar: 0,
     displayApplyBtn: 0
   } );
 
+  const users = state.users;
   const services = useSelector( state => state.services );
-  const sub_services = useSelector( state => state.sub_services );
-  const employees = useSelector( state => state.employees );
-  const employee = employees[ state.employee ];
-  const users = useSelector( state => state.users );
+  const employees = state.employees;
+  const employee = state.employee !== null ? employees[ state.employee ] :undefined;
+  const sub_services = state.sub_services;
   
   const dispatch = useDispatch();
   
-  useEffect( () => {
-    console.log( "useEffect executed" );
-    const { servReq } = store.getState();
-    if( !servReq ){
-      console.log( "servs requested" );
-      dispatch( setProp( "loader", 1 ) );
-      dispatch( getServs() );
-    }else dispatch;
-  }, [] );
-  
   const dateData = useRef( {
     //date data
-    stringifyedMonth:state.month > 8 ?`${ state.month+1 }` :`0${ state.month+1 }`,
-    monthsFirstWeekDay:( new Date( Date.UTC( state.year, state.month, 1 ) ) ).getUTCDay(),
-    lastMonthsDate:( new Date( Date.UTC( state.year, state.month+1, 0 ) ) ).getUTCDate(),
-    getHsMins:() => {
+    stringifyedMonth: state.month > 8 ?`${ state.month+1 }` :`0${ state.month+1 }`,
+    monthsFirstWeekDay: ( new Date( Date.UTC( state.year, state.month, 1 ) ) ).getUTCDay(),
+    lastMonthsDate: ( new Date( Date.UTC( state.year, state.month+1, 0 ) ) ).getUTCDate(),
+    getHsMins: () => {
       const hs = currentDate.current.getUTCHours();
       const mins = currentDate.current.getUTCMinutes();
       return `${hs > 9 ?hs :`0${hs}`}:${mins > 9 ?mins :`0${mins}`}`;
     },
+    //state setters
     //appo data
-    sub_servs:[],
-    user: null,
-    formattedAppoDur:0,
-    appoDurationInMins:0,
+    sub_servs: [],
+    formattedAppoDur: 0,
+    appoDurationInMins: 0,
     //emp data
-    // empShiftStart:toMins( services[ state.service ][ employee.shift ][ 0 ] ),
-    // empShiftEnd:toMins( services[ state.service ][ employee.shift ][ 1 ] )
+    // empShiftStart: toMins( services[ state.service ][ employee.shift ][ 0 ] ),
+    // empShiftEnd: toMins( services[ state.service ][ employee.shift ][ 1 ] )
   } );
   const stringifyedCurrentDate = useRef( `${ state.year }-${ dateData.current.stringifyedMonth }-${ state.day > 9 ?state.day :`0${state.day}` }` );
   
   const days = [];
-
-  const handleServiceChange = ( servInd ) => {
-    dispatch( setProp( "loader", 1 ) );
-    dateData.current.sub_servs = [];
-    dateData.current.appoDurationInMins = 0;
-    dateData.current.empShiftStart = toMins( services[ state.service ][ employee.shift ][ 0 ] );
-    dateData.current.empShiftEnd = toMins( services[ state.service ][ employee.shift ][ 1 ] );
-    dispatch( getServEmps( services[ servInd ].id ) );
-    setState( { ...state, service:servInd, employee:0, displayCalendar:0, displayApplyBtn:0,  } );
-  };
-
-  const handleEmpChange = ( empInd ) => {
-    if( services[ state.service ][ employees[ empInd ].shift ] !== services[ state.service][ employee.shift ] ){
-      dateData.current.empShiftStart = toMins( services[ state.service ][ employees[ empInd ].shift ][ 0 ] );
-      dateData.current.empShiftEnd = toMins( services[ state.service ][ employees[ empInd ].shift ][ 1 ] );
-    };
-    setState( {...state, employee:empInd } );
-  };
   
   const handleMonthChange = () => {
     if( state.month === currentDate.current.getUTCMonth() ){
@@ -155,12 +135,12 @@ const AppoCalendar = () => {
     console.log( "Submited!" );
     dispatch( setProp( "loader", 0 ) );
     dispatch( postAppo(
-      { day, employeeId: employeeId, sub_servs:sub_servs.map( ss => ss.id ), user: dateData.current.user.id },
+      { day, employeeId: employeeId, sub_servs: sub_servs.map( ss => ss.id ), user: state.user.id },
       {
-        service:{ id: services[ state.service ].id , name:services[ state.service ].name },
+        service:{ id: services[ state.service ].id , name: services[ state.service ].name },
         sub_servs,
-        employee:{ id:employee.id, name:employee.name, first_name:employee.first_name, last_name:employee.last_name },
-        empInd:state.employee,
+        employee:{ id: employee.id, name: employee.name, first_name: employee.first_name, last_name: employee.last_name },
+        empInd: state.employee,
         start_time,
         end_time
       }
@@ -390,18 +370,29 @@ const AppoCalendar = () => {
     //     };
     //   };
     // };
-
   };
+  
+  console.log( "____AppoCalendar finished execution____");
   return(
     <div className="AppoCalendar">
       <div className="AppoCalendar-header">
         <h1>Calendario de citas</h1>
       </div>
 
-      <Link to="/home" >Atrás</Link>
+      <Link to="/home" >atrás</Link>
 
-      <UserList dateData = { dateData.current } />
-      <p>Usuario seleccionado: {dateData.current.user ?`${dateData.current.user.first_name} ${dateData.current.user.last_name}` :"Ninguno"} </p>
+      <UserList users = { state.users } selectedUser = { state.user } setState = { setState } />
+      <p>Usuario seleccionado: {state.user ?`${state.user.first_name} ${state.user.last_name}` :"Ninguno"} </p>
+
+      <ServList  services = { services } user = { state.user } setState = { setState } />
+
+      <EmpList
+        services = { services } selServInd = { state.service }
+        employees = { state.employees }
+        dateData = { dateData } toMins = { toMins } setState = { setState }
+      />
+
+      {/* <SubServList selServ={ state.service } services = { services } setState={ setState } dateData={ dateData } /> */}
 
     </div>
   );
@@ -409,45 +400,26 @@ const AppoCalendar = () => {
 
 export default AppoCalendar;
 
-
-      // {/* <p style={{ display:"inline-block", backgroundColor:"rgb( 255, 255, 255, 0.8 )" }}>Lista de servicios:</p>
-      // <select className="AppoCalendar-EmployeList" onChange={ ( e ) => { handleServiceChange( Number( e.target.value ) ); } } value={ state.service } >
-      //   {
-      //     services.map( ( s, i ) => (
-      //       <option value={ i } key={ "services_" + i }>{ s.name }</option>
-      //     ))
-      //   }
-      // </select> */}
-
-      // {/* <SubServList state={ state } setState={ setState } dateData={ dateData } shiftDuration={ dateData.current.empShiftEnd - dateData.current.empShiftStart }/> */}
       
-      // {/* <p style={{ display:"inline-block", backgroundColor:"rgb( 255, 255, 255, 0.8 )" }}>Lista de profesionales:</p>
-      // <select className="AppoCalendar-EmployeList" onChange={ e => { handleEmpChange( Number( e.target.value ) ); } } value={ state.employee }>
-      //   {
-      //     employees.map( ( e, i ) => (
-      //       <option value={ i } key={ "employees_"+i }>{ e.first_name }  { e.last_name }</option>
-      //     ) )
-      //   }
-      // </select> */}
-      // {/* { state.displayCalendar
-      //     ?state.displayApplyBtn
-      //     ?<button onClick={ () => { setState( { ...state, displayApplyBtn:0 } ); } }>Aplicar sub servicios</button>
-      //     :<div>
-      //         <h2 className="AppoCalendar-text" >{ months[ state.month ] } de { state.year }</h2>
-      //         <button className="AppoCalendar-SwitchMonth" onClick={ () => { handleMonthChange(); } }>Ver mes
-      //           { state.month === currentDate.current.getUTCMonth() ?" siguiente" :" actual"}
-      //         </button>
-      //         <p className="AppoCalendar-text">El calendario muestra los días y horarios en los que { employee.first_name } está disponible.</p>
-      //         <div className="AppoCalendar-tableHeader">
-      //           <p>Domingo</p>
-      //           <p>Lunes</p>
-      //           <p>Martes</p>
-      //           <p>Miercoles</p>
-      //           <p>Jueves</p>
-      //           <p>Viernes</p>
-      //           <p>Sabado</p>
-      //         </div>
-      //         { days }
-      //       </div>
-      //   :<h3>Debe seleccionar al menos un sub servicio.</h3>
-      // } */}
+// {/* { state.displayCalendar
+//     ?state.displayApplyBtn
+//     ?<button onClick={ () => { setState( { ...state, displayApplyBtn:0 } ); } }>Aplicar sub servicios</button>
+//     :<div>
+//         <h2 className="AppoCalendar-text" >{ months[ state.month ] } de { state.year }</h2>
+//         <button className="AppoCalendar-SwitchMonth" onClick={ () => { handleMonthChange(); } }>Ver mes
+//           { state.month === currentDate.current.getUTCMonth() ?" siguiente" :" actual"}
+//         </button>
+//         <p className="AppoCalendar-text">El calendario muestra los días y horarios en los que { employee.first_name } está disponible.</p>
+//         <div className="AppoCalendar-tableHeader">
+//           <p>Domingo</p>
+//           <p>Lunes</p>
+//           <p>Martes</p>
+//           <p>Miercoles</p>
+//           <p>Jueves</p>
+//           <p>Viernes</p>
+//           <p>Sabado</p>
+//         </div>
+//         { days }
+//       </div>
+//   :<h3>Debe seleccionar al menos un sub servicio.</h3>
+// } */}
