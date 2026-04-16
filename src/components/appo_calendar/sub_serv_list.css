@@ -1,9 +1,27 @@
-.SubServList{
+.SubServList-container{
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   border: solid 0.2rem black;
   padding: 0.5em;
-  /* background-color: rgb(255, 255, 255, 0.); */
+}
+.SubServList-container-p{
+  margin-bottom: 0px;
+}
+.SubServList-container-clear{
+  width: fit-content;
+  align-self: flex-end;
+  background-color: rgb(231, 0, 0);
+  color: white;
+}
+.SubServList-container-apply{
+  width: fit-content;
+  align-self: center;
+}
+.SubServList{
+  width: 100%;
+  margin-block: 0.5em;
 }
 .SubServList h4{
   width: fit-content;
@@ -35,17 +53,4 @@
   margin: 0px;
   font-weight: bold;
   color: black;
-}
-
-.SubServList-mins label{
-  display: inline-block;
-  margin-top: 1rem;
-  background-color: rgb( 255, 255, 255, 0.8 );
-}
-.SubServList-mins p{
-  display: inline-block;
-  margin: 0px;
-  margin-top: 0.5rem;
-  background-color: rgb( 255, 255, 255, 0.8 );
-  margin-left: 0.5rem;
 }

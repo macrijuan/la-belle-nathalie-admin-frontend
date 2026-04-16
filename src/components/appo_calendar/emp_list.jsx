@@ -1,34 +1,32 @@
-import React, { useRef } from "react";
-import { useDispatch } from "react-redux";
-// import { getServEmps } from "./calendar_state_managers.js";
+import React, { useState, useEffect } from "react";
 
-const EmpList = ( { services, selServInd, employees, dateData, toMins, setState } ) => {
+const EmpList = ( { services, selServInd, employees, selEmpInd, dateData, toMins, setState } ) => {
 
   console.log( "EmpList executed." );
 
-  const dispatch = useDispatch();
+  const [ value, setValue ] = useState( 0 );
 
-  const selectedEmployee = useRef( 0 );
+  useEffect( () => {
+    if( selEmpInd === null ) setValue( 0 );
+  }, [ selEmpInd ] );
+
 
   if( selServInd !== null ){
+    console.log( "EmpList has rendered.");
     if( employees.length ){
-      console.log( "EmpList has rendered.");
-      const handleEmpClick = ( clickedEmpInd ) => {
-        if( services[ selServInd ][ employees[ clickedEmpInd ].shift ] !== services[ selServInd ][ employees[ selEmpInd ].shift ] ){
-          dateData.current.empShiftStart = toMins( services[ selServInd ][ employees[ clickedEmpInd ].shift ][ 0 ] );
-          dateData.current.empShiftEnd = toMins( services[ selServInd ][ employees[ clickedEmpInd ].shift ][ 1 ] );
+      const handleEmpApply = ( clickedEmpInd ) => {
+        if( !selEmpInd || JSON.stringy( services[ selServInd ][ employees[ clickedEmpInd ].shift ] ) !== JSON.stringy( services[ selServInd ][ employees[ selEmpInd ].shift ] ) ){          
+          dateData.empShiftStart = toMins( services[ selServInd ][ employees[ clickedEmpInd ].shift ][ 0 ] );
+          dateData.empShiftEnd = toMins( services[ selServInd ][ employees[ clickedEmpInd ].shift ][ 1 ] );
+          dateData.shiftDurationInMins = dateData.empShiftEnd - dateData.empShiftStart;
         };
-        dateData.current.sub_servs = [];
-        dateData.current.appoDurationInMins = 0;
-        dateData.current.empShiftStart = toMins( services[ selServInd ][ employees[ selEmpInd ].shift ][ 0 ] );
-        dateData.current.empShiftEnd = toMins( services[ selServInd ][ employees[ selEmpInd ].shift ][ 1 ] );
-        setState( curState => ( { ...curState, employee: selectedEmployee.current } ) );
+        setState( curState => ( { ...curState, employee: clickedEmpInd } ) );
       };
     
       return(
         <div>
           <p style={{ display:"inline-block", backgroundColor:"rgb( 255, 255, 255, 0.8 )" }}>Lista de profesionales:</p>
-           <select className="AppoCalendar-EmployeList" onChange={ e => { selectedEmployee.current = Number( e.target.value ); } } value={ selectedEmployee.current }>
+           <select className="AppoCalendar-EmployeList" onChange={ e => { setValue( Number( e.target.value ) ); } } value={ value }>
             {
               employees.map( ( e, i ) => (
                 <option value={ i } key={ "employees_"+i }>{ e.first_name }  { e.last_name }</option>
@@ -36,7 +34,7 @@ const EmpList = ( { services, selServInd, employees, dateData, toMins, setState 
             }
           </select>
           <button
-            onClick={ () => {  } }
+            onClick={ () => { handleEmpApply( value ); } }
           >aplicar empleado</button>
         </div>
       );
@@ -48,4 +46,4 @@ const EmpList = ( { services, selServInd, employees, dateData, toMins, setState 
   };
 };
 
-export default  EmpList;
+export default React.memo( EmpList );

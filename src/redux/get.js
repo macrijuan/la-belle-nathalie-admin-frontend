@@ -65,6 +65,22 @@ export const getAppos = () => async ( dispatch, getState ) => {
   };
 };
 
+export const getAllAppos = () => async ( dispatch, getState ) => {
+  try{
+    const token = getState().user.token;
+    const res = await fetch( `${process.env.SERVER}/appointment/get_all_appos`, config( token, 'GET' ) );
+    if( res ){
+      const body = await res.json();
+      dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, body ) ) );
+    }else{
+      dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, errs.conn_server_format ) ) );
+    };
+  }catch( err ){
+    console.error( err );
+    dispatch( actioner( actions.GET, actioner( actions.APPO_CAL, errs.unknown_server_format ) ) );
+  };
+};
+
 export const getUsers = () => async( dispatch, getState )=>{
   try{
     const token = getState().user.token;

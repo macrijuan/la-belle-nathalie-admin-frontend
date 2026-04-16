@@ -32,11 +32,17 @@ export const getUsers = async ( setState, dispatch ) => {
   };
 };
 
-export const handleUserApply = async ( selUser, setState, dispatch ) => {
+export const handleUserApply = async ( selUser, dateData, setState, dispatch ) => {
   try{
+    dateData.sub_servs = [];
+    dateData.formattedAppoDur = "0 Hs, 0 Mins";
+    dateData.appoDurationInMins = 0;
+    dateData.shiftDurationInMins = undefined;
+    dateData.empShiftStart = undefined;
+    dateData.empShiftEnd = undefined;
     const servReq = store.getState().servReq;
     if( servReq ){
-      setState( curState => ( { ...curState, user: selUser, service: null, displayCalendar: 0, displayApplyBtn: 0 } ) );
+      setState( curState => ( { ...curState, user: selUser, service: null, employee: null, displayCalendar: 0 } ) );
     }else{
       dispatch( setProp2( { loader: 1 } ) );
       const res = await fetch( `${process.env.SERVER}/service/get_services`, config( store.getState().user.token, 'GET' ) )
@@ -45,7 +51,7 @@ export const handleUserApply = async ( selUser, setState, dispatch ) => {
         const body = await res.json();
         if( !body.errors ){
           // body.forEach( u => u.id = Number( u.id ) );
-          setState( curState => ( { ...curState, user: selUser, service: null, displayCalendar: 0, displayApplyBtn: 0 } ) );
+          setState( curState => ( { ...curState, user: selUser, service: null, employee: null, displayCalendar: 0 } ) );
           dispatch( setProp2( { loader: 0, servReq: 1, services: body } ) );
         }else{
           dispatch( actioner( actions.GET, actioner( actions.SERVICE, body ) ) );
@@ -60,14 +66,19 @@ export const handleUserApply = async ( selUser, setState, dispatch ) => {
   };
 };
 
-export const handleServApply = async ( selServInd, selServId, setState, dispatch ) => {
+export const handleServApply = async ( selServInd, selServId, dateData, setState, dispatch ) => {
   try{
+    dateData.sub_servs = [];
+    dateData.formattedAppoDur = "0 Hs, 0 Mins";
+    dateData.appoDurationInMins = 0;
+    dateData.shiftDurationInMins = undefined;
+    dateData.empShiftStart = undefined;
+    dateData.empShiftEnd = undefined;
     if( !selServId ) throw new Error( `No id found. (selServId -> ${selServId}).` );
     const empReq = store.getState().empReq;
     if( empReq ){
       const employees = store.getState().employees.filter( e => e.service.id === selServId );
-      console.log( "selServId: ", selServId );
-      setState( curState => ( { ...curState, service: selServInd, employees: employees, employee: null, displayCalendar: 0, displayApplyBtn: 0 } ) );
+      setState( curState => ( { ...curState, service: selServInd, employees: employees, employee: null, displayCalendar: 0 } ) );
     }else{
       dispatch( setProp2( { loader: 1 } ) );
       const res = await fetch( `${process.env.SERVER}/employee/get_employees`, config( store.getState().user.token, 'GET' ) )
@@ -76,7 +87,7 @@ export const handleServApply = async ( selServInd, selServId, setState, dispatch
         const body = await res.json();
         if( !body.errors ){
           const employees = body.filter( e => e.service.id === selServId );
-          setState( curState => ( { ...curState, service: selServInd, employees: employees, employee: null, displayCalendar: 0, displayApplyBtn: 0 } ) );
+          setState( curState => ( { ...curState, service: selServInd, employees: employees, employee: null, displayCalendar: 0 } ) );
           dispatch( setProp2( { loader: 0, empReq: 1, employees: body } ) );
         }else{
           dispatch( actioner( actions.GET, actioner( actions.EMPLOYEE, body ) ) );
@@ -90,26 +101,3 @@ export const handleServApply = async ( selServInd, selServId, setState, dispatch
     dispatch( actioner( actions.GET, actioner( actions.EMPLOYEE, errs.unknown_server_format ) ) );
   };
 };
-
-export const getServEmps = async ( serviceId, setState, dispatch ) => {
-  try{
-    const token = store.getState().user.token;
-    const res = await fetch( `${process.env.SERVER}/employee/get_employees?service=${serviceId}`, config( token, 'GET' ) )
-    .catch( err => { console.error( err ); return 0; } );
-    if( res ){
-      const body = await res.json();
-      if( !body.errors ){
-        setState( curState => ( { ...curState, empReq: 1, employees: body.filter( e => e.service.id === serviceId ) } ) );
-        dispatch( setProp2( { loader: 0 } ) );
-      }else{
-        dispatch( setProp2( { loader: 0, message: body.errors } ) );
-      };
-    }else{
-      dispatch( setProp2( { loader: 0, message: errs.conn } ) );
-    };
-  }catch( err ){
-    console.error( err );
-    dispatch( setProp2( { loader: 0, message: errs.unknown } ) );
-  };
-};
-

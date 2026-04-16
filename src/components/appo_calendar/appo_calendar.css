@@ -51,7 +51,7 @@
 
 .AppoCalendar-PrevMonthDays{
   width: 9.5%;
-  height: 60%;
+  height: 20%;
   margin: 1%;
   padding: 1%;
   display: inline-block;
@@ -65,10 +65,10 @@
   margin: 1%;
   padding: 1%;
   display: inline-block;
-  overflow: auto;
-  scrollbar-width: thin;
   border: solid 0.2em rgb(255, 255, 255);
   background-color: rgb(255, 255, 255, 0.7);
+  overflow: auto;
+  scrollbar-width: thin;
 }
 
 .AppoCalendar-Day:hover{

@@ -1,24 +1,29 @@
-import React, { useEffect, useRef } from "react";
-import store from "../../redux/store";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { handleServApply } from "./calendar_state_managers.js";
 
-const ServList = ( { services, user, setState } ) => {
+const ServList = ( { services, selServInd, user, dateData, setState } ) => {
 
-  console.log( "ServList re-executed" );
+  console.log( "ServList executed" );
+
+  const [ value, setValue ] = useState( 0 );
+
+  console.log( selServInd );
+  useEffect( () => {
+    if( selServInd === null ) setValue( 0 );
+  }, [ selServInd ] );
   
   const dispatch = useDispatch();
-
-  const selServInd = useRef( 0 );
 
   if( user ){
     console.log( "ServList has rendered" );
     
     if( services.length ){
+
       return(
         <div>
           <p style={{ display:"inline-block", backgroundColor:"rgb( 255, 255, 255, 0.8 )" }} >Lista de servicios:</p>
-          <select className="AppoCalendar-EmployeList" onChange={ ( e ) => { selectedService.current =  Number( e.target.value ); } } value = { selServInd.current } >
+          <select className="AppoCalendar-EmployeList" value={ value } onChange={ e => { setValue( Number( e.target.value ) ); } }>
             {
               services.map( ( s, i ) => (
                 <option value={ i } key={ s.id }>{ s.name }</option>
@@ -26,7 +31,7 @@ const ServList = ( { services, user, setState } ) => {
             }
           </select>
           <button
-            onClick={ () => { handleServApply( selServInd.current, services[ selServInd.current ]?.id, setState, dispatch ); } }
+            onClick={ () => { handleServApply( value, services[ value ]?.id, dateData, setState, dispatch ); } }
           >aplicar servicio</button>
         </div>    
       );

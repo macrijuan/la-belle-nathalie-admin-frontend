@@ -6,8 +6,8 @@ import { getUsers, handleUserApply } from "./calendar_state_managers.js";
 import "./user_list.css";
 
 
-const UserList = ({ users, selectedUser, setState }) => {
-  console.log( "UserList re-executed" );
+const UserList = ({ users, selectedUser, dateData, setState }) => {
+  console.log( "UserList executed" );
 
   const [ display, setDisplay ] = useState( 0 );
 
@@ -46,7 +46,7 @@ const UserList = ({ users, selectedUser, setState }) => {
                 <div
                   key={ u.id }
                   className="UserList-row" 
-                  onClick={ () => { handleUserApply( u, setState, dispatch ); } }
+                  onClick={ () => { handleUserApply( u, dateData, setState, dispatch ); } }
                 >
                   <h5>{ u.first_name }</h5>
                   <h5>{ u.last_name }</h5>

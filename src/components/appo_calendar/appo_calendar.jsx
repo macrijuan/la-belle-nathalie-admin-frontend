@@ -13,7 +13,7 @@ import "./appo_calendar.css";
 
 const months = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ];
 
-const toMins = ( hhmmss ) => {
+export const toMins = ( hhmmss ) => {
   const data = hhmmss.split( ":" );
   return Number( data[ 0 ] ) * 60 + Number( data[ 1 ] );
 };
@@ -61,14 +61,12 @@ const AppoCalendar = () => {
     sub_services: [],
     userReq: 0,
     empReq: 0,
-    displayCalendar: 0,
-    displayApplyBtn: 0
+    displayCalendar: 0
   } );
 
   const users = state.users;
   const services = useSelector( state => state.services );
-  const employees = state.employees;
-  const employee = state.employee !== null ? employees[ state.employee ] :undefined;
+  const employee = state.employee !== null ? state.employees[ state.employee ] :undefined;
   const sub_services = state.sub_services;
   
   const dispatch = useDispatch();
@@ -83,14 +81,14 @@ const AppoCalendar = () => {
       const mins = currentDate.current.getUTCMinutes();
       return `${hs > 9 ?hs :`0${hs}`}:${mins > 9 ?mins :`0${mins}`}`;
     },
-    //state setters
     //appo data
     sub_servs: [],
-    formattedAppoDur: 0,
+    formattedAppoDur: "0 Hs, 0 Mins",
     appoDurationInMins: 0,
     //emp data
-    // empShiftStart: toMins( services[ state.service ][ employee.shift ][ 0 ] ),
-    // empShiftEnd: toMins( services[ state.service ][ employee.shift ][ 1 ] )
+    shiftDurationInMins: undefined,
+    empShiftStart: undefined,
+    empShiftEnd: undefined
   } );
   const stringifyedCurrentDate = useRef( `${ state.year }-${ dateData.current.stringifyedMonth }-${ state.day > 9 ?state.day :`0${state.day}` }` );
   
@@ -147,229 +145,103 @@ const AppoCalendar = () => {
     ) );
   };
 
-  if( services.length && sub_services.length && employees.length && users.length ){    
-    // if( !dateData.current.empShiftStart ){
-    //   dateData.current.empShiftStart = toMins( services[ state.service ][ employee.shift ][ 0 ] );
-    //   dateData.current.empShiftEnd = toMins( services[ state.service ][ employee.shift ][ 1 ] );
-    // };
-    // if( dateData.current.sub_servs.length && !state.displayApplyBtn ){
-    //   if( dateData.current.monthsFirstWeekDay ){
-    //     for( let day = 0; day < dateData.current.monthsFirstWeekDay; day++ ){
-    //       days.push(
-    //         <div className="AppoCalendar-PrevMonthDays" key={ "monthsFirstWeekDay_"+day }></div>
-    //       );
-    //     };
-    //   };
-    //   const halfHourToFuture = toMins( dateData.current.getHsMins() ) + 30;
-    //   mainLoop: for( let day = 1; day <= dateData.current.lastMonthsDate; day++ ){
-    //     const currentMapedDay = `${ state.year }-${ dateData.current.stringifyedMonth }-${ day > 9 ?day :`0${day}` }`;
-    //     // console.log( currentMapedDay );
-    //     //check if currentMapedDay = Sunday
-    //     if( ( new Date( currentMapedDay ) ).getUTCDay() === 0 ){
-    //       console.log( currentMapedDay );
-    //       days.push(
-    //         <div className="AppoCalendar-Day" key={ "days_"+day }>
-    //           <p>{ day }</p>
-    //         </div>
-    //       );
-    //       continue mainLoop;
-    //     };
-    //     if( currentMapedDay > stringifyedCurrentDate.current ){
-    //       //CHECK IF FUTURE DAY
-    //       // console.log( "____FUTURE DAY____" );
-    //       if( !employee.appointments[ currentMapedDay ] ){
-    //         //Between employee's shift start and shift end
-    //         // console.log( "NO APPOS." );
-    //         dayBoxFiller(
-    //           days, day, services[ state.service ][ employee.shift ][ 0 ], handleAppoPost,
-    //           [ currentMapedDay, employee.id, dateData.current.sub_servs, services[ state.service ][ employee.shift ][ 0 ] ]
-    //         );
-    //         continue mainLoop;
-    //       }else if(
-    //         //Between employee's shift start and first appointment
-    //         ( toMins( employee.appointments[ currentMapedDay ][ 0 ].start_time ) - dateData.current.empShiftStart ) >= dateData.current.appoDurationInMins
-    //       ){
-    //         // console.log( "EMP SHIFT START - FIRST APPO" );
-    //         dayBoxFiller(
-    //           days, day, employee.appointments[ currentMapedDay ][ 0 ].start_time, handleAppoPost,
-    //           [ currentMapedDay, employee.id, dateData.current.sub_servs, employee.appointments[ currentMapedDay ][ 0 ].start_time ]
-    //         );
-    //         continue mainLoop;
-    //       }else{
-    //         let i = 0;
-    //         while( ( i < employee.appointments[ currentMapedDay ].length - 1 ) ){
-    //           if(
-    //             ( toMins( employee.appointments[ currentMapedDay ][ i + 1 ].start_time ) - toMins( employee.appointments[ currentMapedDay ][ i ].end_time ) ) >= dateData.current.appoDurationInMins
-    //           ){
-    //             //Between current appointment and next appointment.
-    //             // console.log( "CUR APPO - NEXT APPO" );
-    //             dayBoxFiller(
-    //               days, day, employee.appointments[ currentMapedDay ][ i ].end_time, handleAppoPost,
-    //               [ currentMapedDay, employee.id, dateData.current.sub_servs, employee.appointments[ currentMapedDay ][ i ].end_time ]
-    //             );
-    //             continue mainLoop;
-    //           };
-    //           i++;
-    //         };
-    //         if(
-    //           ( ( dateData.current.empShiftEnd - toMins( employee.appointments[ currentMapedDay ][ i ].end_time ) ) >= dateData.current.appoDurationInMins )
-    //         ){
-    //           //between last appointment and employee's end shift time
-    //           console.log( "LAST APPO - EMP SHIFT END" );
-    //           dayBoxFiller(
-    //             days, day, employee.appointments[ currentMapedDay ][ i ].end_time, handleAppoPost,
-    //             [ currentMapedDay, employee.id, dateData.current.sub_servs, employee.appointments[ currentMapedDay ][ i ].end_time ]
-    //           );
-    //         }else{
-    //           //not possible
-    //           // console.log( "LAST APPO - EMP SHIFT END -> NOT POSSIBLE" );
-    //           days.push(
-    //             <div className="AppoCalendar-Day" key={ "days_"+day }>
-    //               <p>{ day }</p>
-    //             </div>
-    //           );
-    //         };
-    //       };
-    //     }else if( currentMapedDay === stringifyedCurrentDate.current ){
-    //       //CHECK IF TODAY
-    //       // console.log( "____TODAY CASE____" );
-    //       const firstAppoST = employee.appointments[ currentMapedDay ]
-    //         ?toMins( employee.appointments[ currentMapedDay ][ 0 ].start_time )
-    //       :0;
-    //       const lastAppoET = employee.appointments[ currentMapedDay ]
-    //         ?toMins( employee.appointments[ currentMapedDay ][ employee.appointments[ currentMapedDay ].length - 1 ].end_time )
-    //       :0;
-    //       if( !employee.appointments[ currentMapedDay ] ){
-    //         // console.log( "NO APPOS." );
-    //         switch( true ){
-    //           case ( halfHourToFuture <= dateData.current.empShiftStart ):
-    //             //Between employee's shift start and shift end
-    //             // console.log( "EMP SHIFT START - EMP SHIFT END");
-    //             dayBoxFiller(
-    //               days, day, services[ state.service ][ employee.shift ][ 0 ], handleAppoPost,
-    //               [ currentMapedDay, employee.id, dateData.current.sub_servs, services[ state.service ][ employee.shift ][ 0 ] ]
-    //             );
-    //             break;
-    //           case (
-    //             halfHourToFuture < dateData.current.empShiftEnd
-    //             && ( ( dateData.current.empShiftEnd - halfHourToFuture ) >= dateData.current.appoDurationInMins )
-    //           ):
-    //             //between 30 mins to future and employee's shift end
-    //             // console.log( "30 MINS TO FUTURE - EMP SHIFT END");
-    //             dayBoxFiller(
-    //               days, day, toHs( halfHourToFuture ), handleAppoPost,
-    //               [ currentMapedDay, employee.id, dateData.current.sub_servs, toHs( halfHourToFuture ) ]
-    //             );
-    //             break;
-    //             default: 
-    //             //not possible
-    //             // console.log( "30 MINS TO FUTURE - EMP SHIFT END -> NOT POSSIBLE");
-    //           days.push(
-    //             <div className="AppoCalendar-Day" key={ "days_"+day }>
-    //               <p>{ day }</p>
-    //             </div>
-    //           );
-    //         };
-    //         continue mainLoop;
-    //       }else if( halfHourToFuture <= dateData.current.empShiftStart && ( firstAppoST - dateData.current.empShiftStart ) >= dateData.current.appoDurationInMins ){
-    //         //Between employee's shift start and first appointment
-    //         // console.log( "EMP SHIFT START - FIRST APPO" );
-    //         dayBoxFiller(
-    //           days, day, employee.appointments[ currentMapedDay ][ 0 ].start_time, handleAppoPost,
-    //           [ currentMapedDay, employee.id, dateData.current.sub_servs, employee.appointments[ currentMapedDay ][ 0 ].start_time ]
-    //         );
-    //         continue mainLoop;
-    //       }else if( halfHourToFuture > dateData.current.empShiftStart && ( firstAppoST - halfHourToFuture ) >= dateData.current.appoDurationInMins ){
-    //         //Between 30 mins to future and first appointment
-    //         // console.log( "30 MINS TO FUTURE - FIRST APPO" );
-    //         dayBoxFiller(
-    //           days, day, toHs( halfHourToFuture ), handleAppoPost,
-    //           [ currentMapedDay, employee.id, dateData.current.sub_servs, toHs( halfHourToFuture ) ]
-    //         );
-    //         continue mainLoop;
-    //       }else{
-    //         let i = 0;
-    //         while( ( i < employee.appointments[ currentMapedDay ].length - 1 ) ){
-    //           if(
-    //             halfHourToFuture >= toMins( employee.appointments[ currentMapedDay ][ i ].end_time )
-    //             && halfHourToFuture < toMins( employee.appointments[ currentMapedDay ][ i + 1 ].start_time )
-    //             && ( toMins( employee.appointments[ currentMapedDay ][ i + 1 ].start_time ) - halfHourToFuture ) >= dateData.current.appoDurationInMins
-    //           ){
-    //             //Between 30 mins to future and and next appointment
-    //             // console.log( "__AMONG APPOS__" );
-    //             // console.log( "30 MINS TO FUTURE - NEXT APPO" );
-    //             dayBoxFiller(
-    //               days, day, toHs( halfHourToFuture ), handleAppoPost,
-    //               [ currentMapedDay, employee.id, dateData.current.sub_servs, toHs( halfHourToFuture ) ]
-    //             );
-    //             continue mainLoop;
-    //           }else if(
-    //             halfHourToFuture < toMins( employee.appointments[ currentMapedDay ][ i ].end_time )
-    //             && (toMins( employee.appointments[ currentMapedDay ][ i + 1 ].start_time ) - toMins( employee.appointments[ currentMapedDay ][ i ].end_time )) >= dateData.current.appoDurationInMins
-    //           ){
-    //             //Between current appointment and next appointment.
-    //             // console.log( "__AMONG APPOS__" );
-    //             // console.log( "CUR APPO - NEXT APPO" );
-    //             dayBoxFiller(
-    //               days, day, employee.appointments[ currentMapedDay ][ i ].end_time, handleAppoPost,
-    //               [ currentMapedDay, employee.id, dateData.current.sub_servs, employee.appointments[ currentMapedDay ][ i ].end_time ]
-    //             );
-    //             continue mainLoop;
-    //           };
-    //           i++;
-    //         };
-    //         // console.log( "AMONG APPOS NOT FOUND. PASSES TO LAST CASES." );
-    //         if(
-    //           halfHourToFuture <= lastAppoET
-    //           && ( ( dateData.current.empShiftEnd - lastAppoET ) >= dateData.current.appoDurationInMins )
-    //         ){
-    //           //between last appointment and employee's end shift time
-    //           // console.log( "LAST APPO - EMP SHIFT END" );
-    //           days.push(
-    //             <div
-    //               className="AppoCalendar-Day" key={ "days_"+day }
-    //               onClick={ () => { handleAppoPost( currentMapedDay, employee.id, dateData.current.sub_servs, employee.appointments[ currentMapedDay ][ i ].end_time ); } }
-    //             >
-    //               <p>{ day }</p>
-    //               <p>{ employee.appointments[ currentMapedDay ][ i ].end_time }</p>
-    //             </div>
-    //           );
-    //         }else if(
-    //           halfHourToFuture > lastAppoET
-    //           && ( dateData.current.empShiftEnd - halfHourToFuture ) >= dateData.current.appoDurationInMins
-    //         ){
-    //           //between 30 mins to future and employee's end shift time
-    //           // console.log( "30 MINS TO FUTURE - EMP SHIFT END" );
-    //           days.push(
-    //             <div
-    //             className="AppoCalendar-Day" key={ "days_"+day }
-    //             onClick={ () => { handleAppoPost( currentMapedDay, employee.id, dateData.current.sub_servs, toHs( halfHourToFuture ) ) } }
-    //             >
-    //               <p>{ day }</p>
-    //               <p>{ toHs( halfHourToFuture ) }</p>
-    //             </div>
-    //           );
-    //         }else{
-    //           //not possible
-    //           // console.log( "30 MINS TO FUTURE - EMP SHIFT END -> NOT POSSIBLE" );
-    //           days.push(
-    //             <div className="AppoCalendar-Day" key={ "days_"+day }>
-    //               <p>{ day }</p>
-    //             </div>
-    //           );
-    //         };
-    //       };
-    //     }else{
-    //       //past day
-    //       // console.log( "PAST DAY -> NOT POSSIBLE" );
-    //       days.push(
-    //         <div className="AppoCalendar-Day" key={ "days_"+day }>
-    //           <p>{ day }</p>
-    //         </div>
-    //       );
-    //     };
-    //   };
-    // };
+  if( state.displayCalendar ){
+    console.log( "FULLFILLS DAYS" );
+    if( dateData.current.monthsFirstWeekDay ){
+      for( let day = 0; day < dateData.current.monthsFirstWeekDay; day++ ){
+        days.push(
+          <div className="AppoCalendar-PrevMonthDays" key={ "monthsFirstWeekDay_"+day }></div>
+        );
+      };
+    };
+
+    mainLoop: for( let day = 1; day <= dateData.current.lastMonthsDate; day++ ){
+      const currentMapedDay = `${ state.year }-${ dateData.current.stringifyedMonth }-${ day > 9 ?day :`0${day}` }`;
+      console.log( currentMapedDay );
+      //check if currentMapedDay = Sunday
+      if( ( new Date( currentMapedDay ) ).getUTCDay() === 0 ){
+        days.push(
+          <div className="AppoCalendar-Day" key={ "days_"+day }>
+            <p>{ day }</p>
+          </div>
+        );
+        continue mainLoop;
+      };
+      if( currentMapedDay > stringifyedCurrentDate.current ){
+        //CHECK IF FUTURE DAY
+        // console.log( "____FUTURE CASE____" );
+
+        if(
+          !state.employees[ state.employee ].appointments[ currentMapedDay ]
+          || ( toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ 0 ].start_time ) - dateData.current.empShiftStart ) >= dateData.current.appoDurationInMins
+        ){
+          // console.log( "FREE DAY OR BETWEEN EMP SHIFT START AND FIRST APPO" );
+          dayBoxFiller(
+            days, day, services[ state.service ][ employee.shift ][ 0 ], handleAppoPost,
+            [ currentMapedDay, employee.id, dateData.current.sub_servs, services[ state.service ][ employee.shift ][ 0 ] ]
+          );
+          continue mainLoop;
+        };
+
+        let i = 0;
+        while( i < ( state.employees[ state.employee ].appointments[ currentMapedDay ].length - 1 ) ){
+          if(
+            (
+              toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ i+1 ].start_time )
+              - toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time )
+            ) >= dateData.current.appoDurationInMins
+          ){
+            // console.log( "BETWEEN APPOINTMENTS" );
+          dayBoxFiller(
+            days, day, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time, handleAppoPost,
+            [ currentMapedDay, employee.id, dateData.current.sub_servs, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time ]
+          );
+          continue mainLoop;
+          };
+          i++;
+        };
+
+        if(
+          (
+            dateData.current.empShiftEnd
+            - toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time )
+          ) >= dateData.current.appoDurationInMins
+        ){
+          // console.log( "BETWEEN LAST APPOINTMENTS AND EMP SHIFT END TIME" );
+          dayBoxFiller(
+            days, day, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time, handleAppoPost,
+            [ currentMapedDay, employee.id, dateData.current.sub_servs, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time ]
+          );
+          continue mainLoop;
+        };
+
+        // console.log( "NOT POSSIBLE" );
+        days.push(
+          <div className="AppoCalendar-Day" key={ "days_"+day }>
+            <p>{ day }</p>
+          </div>
+        );
+        
+      }else if( currentMapedDay === stringifyedCurrentDate.current ){
+        //CHECK IF TODAY
+        // console.log( "____TODAY CASE____" );
+        const halfHourToFuture = toMins( dateData.current.getHsMins() ) + 30;
+        days.push(
+          <div className="AppoCalendar-Day" key={ "days_"+day }>
+            <p>{ day }</p>
+          </div>
+        );
+      }else{
+        //PAST DAY
+        // console.log( "____PAST DAY CASE____" );
+        days.push(
+          <div className="AppoCalendar-Day" key={ "days_"+day }>
+            <p>{ day }</p>
+          </div>
+        );
+      };
+    };
+
   };
   
   console.log( "____AppoCalendar finished execution____");
@@ -381,45 +253,42 @@ const AppoCalendar = () => {
 
       <Link to="/home" >atrás</Link>
 
-      <UserList users = { state.users } selectedUser = { state.user } setState = { setState } />
+      <UserList users={ state.users } selectedUser={ state.user } dateData= { dateData.current } setState={ setState } />
       <p>Usuario seleccionado: {state.user ?`${state.user.first_name} ${state.user.last_name}` :"Ninguno"} </p>
 
-      <ServList  services = { services } user = { state.user } setState = { setState } />
+      <ServList  services={ services } selServInd={ state.service } user={ state.user } dateData={ dateData.current } setState={ setState } />
 
       <EmpList
-        services = { services } selServInd = { state.service }
-        employees = { state.employees }
-        dateData = { dateData } toMins = { toMins } setState = { setState }
+        services={ services } selServInd={ state.service }
+        employees={ state.employees }
+        dateData={ dateData.current } toMins={ toMins } setState={ setState }
       />
 
-      {/* <SubServList selServ={ state.service } services = { services } setState={ setState } dateData={ dateData } /> */}
+      <SubServList selServ={ state.service } services={ services } selEmpInd={ state.employee } employees={ state.employees } dateData={ dateData.current } setState={ setState } />
 
+      {
+        state.displayCalendar
+          ?<div>
+            <h2 className="AppoCalendar-text" >{ months[ state.month ] } de { state.year }</h2>
+            <button className="AppoCalendar-SwitchMonth" onClick={ () => { handleMonthChange(); } }>Ver mes
+              { state.month === currentDate.current.getUTCMonth() ?" siguiente" :" actual"}
+            </button>
+            <p className="AppoCalendar-text">El calendario muestra los días y horarios en los que { employee.first_name } está disponible.</p>
+            <div className="AppoCalendar-tableHeader">
+              <p>Domingo</p>
+              <p>Lunes</p>
+              <p>Martes</p>
+              <p>Miercoles</p>
+              <p>Jueves</p>
+              <p>Viernes</p>
+              <p>Sabado</p>
+            </div>
+            { days }
+          </div>
+        :null
+      }
     </div>
   );
 };
 
 export default AppoCalendar;
-
-      
-// {/* { state.displayCalendar
-//     ?state.displayApplyBtn
-//     ?<button onClick={ () => { setState( { ...state, displayApplyBtn:0 } ); } }>Aplicar sub servicios</button>
-//     :<div>
-//         <h2 className="AppoCalendar-text" >{ months[ state.month ] } de { state.year }</h2>
-//         <button className="AppoCalendar-SwitchMonth" onClick={ () => { handleMonthChange(); } }>Ver mes
-//           { state.month === currentDate.current.getUTCMonth() ?" siguiente" :" actual"}
-//         </button>
-//         <p className="AppoCalendar-text">El calendario muestra los días y horarios en los que { employee.first_name } está disponible.</p>
-//         <div className="AppoCalendar-tableHeader">
-//           <p>Domingo</p>
-//           <p>Lunes</p>
-//           <p>Martes</p>
-//           <p>Miercoles</p>
-//           <p>Jueves</p>
-//           <p>Viernes</p>
-//           <p>Sabado</p>
-//         </div>
-//         { days }
-//       </div>
-//   :<h3>Debe seleccionar al menos un sub servicio.</h3>
-// } */}
