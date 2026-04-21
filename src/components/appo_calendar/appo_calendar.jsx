@@ -168,7 +168,7 @@ const AppoCalendar = () => {
         continue mainLoop;
       };
       if( currentMapedDay > stringifyedCurrentDate.current ){
-        //CHECK IF FUTURE DAY
+        /////////////////////////CHECK IF FUTURE DAY/////////////////////////
         // console.log( "____FUTURE CASE____" );
 
         if(
@@ -223,9 +223,81 @@ const AppoCalendar = () => {
         );
         
       }else if( currentMapedDay === stringifyedCurrentDate.current ){
-        //CHECK IF TODAY
+        /////////////////////////CHECK IF TODAY/////////////////////////
         // console.log( "____TODAY CASE____" );
-        const halfHourToFuture = toMins( dateData.current.getHsMins() ) + 30;
+        const halfHourToFuture = toMins( dateData.current.getHsMins() );
+
+        if( !state.employees[ state.employee ].appointments[ currentMapedDay ] ){
+          if( ( dateData.current.empShiftEnd - halfHourToFuture ) >= dateData.current.appoDurationInMins ){
+            console.log( "FREE DAY" );
+            dayBoxFiller(
+              days, day, services[ state.service ][ employee.shift ][ 0 ], handleAppoPost,
+              [ currentMapedDay, employee.id, dateData.current.sub_servs, services[ state.service ][ employee.shift ][ 0 ] ]
+            );
+          }else{
+            console.log( "NOT POSSIBLE 1" );
+            days.push(
+              <div className="AppoCalendar-Day" key={ "days_"+day }>
+                <p>{ day }</p>
+              </div>
+            );
+          };
+          continue mainLoop
+        };
+
+        if(
+            toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ 0 ].start_time )
+            - Math.max( halfHourToFuture, dateData.current.empShiftStart
+          ) >= dateData.current.appoDurationInMins
+        ){
+          console.log( "BETWEEN EMP SHIFT START AND FIRST APPO" );
+          dayBoxFiller(
+            days, day, services[ state.service ][ employee.shift ][ 0 ], handleAppoPost,
+            [ currentMapedDay, employee.id, dateData.current.sub_servs, services[ state.service ][ employee.shift ][ 0 ] ]
+          );
+          continue mainLoop;
+        };
+
+        let i = 0;
+        startTimeAfter30ToFuture: while( i < ( state.employees[ state.employee ].appointments[ currentMapedDay ].length - 1 ) ){
+          if(
+            halfHourToFuture < toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ i+1 ].start_time )
+          ) break startTimeAfter30ToFuture;
+          i++;
+        }
+        while( i < ( state.employees[ state.employee ].appointments[ currentMapedDay ].length - 1 ) ){
+          const nextAppoStartTime = toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ i+1 ].start_time );
+          if(
+            (
+              nextAppoStartTime
+              - Math.max( halfHourToFuture, toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time ) )
+            ) >= dateData.current.appoDurationInMins
+          ){
+            console.log( "BETWEEN APPOINTMENTS" );
+          dayBoxFiller(
+            days, day, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time, handleAppoPost,
+            [ currentMapedDay, employee.id, dateData.current.sub_servs, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time ]
+          );
+          continue mainLoop;
+          };
+          i++;
+        };
+
+        if(
+          (
+            dateData.current.empShiftEnd
+            - Math.max( halfHourToFuture, toMins( state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time ) )
+          ) >= dateData.current.appoDurationInMins
+        ){
+          console.log( "BETWEEN LAST APPOINTMENTS AND EMP SHIFT END TIME" );
+          dayBoxFiller(
+            days, day, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time, handleAppoPost,
+            [ currentMapedDay, employee.id, dateData.current.sub_servs, state.employees[ state.employee ].appointments[ currentMapedDay ][ i ].end_time ]
+          );
+          continue mainLoop;
+        };
+
+        console.log( "NOT POSSIBLE 2" );
         days.push(
           <div className="AppoCalendar-Day" key={ "days_"+day }>
             <p>{ day }</p>
