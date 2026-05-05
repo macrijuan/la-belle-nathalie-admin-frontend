@@ -38,7 +38,7 @@ const getReducer = ( state, { type, payload } ) => {
           payload.forEach( ( a, i ) => {
             a.id = parseInt( a.id );
             a.service.id = parseInt( a.service.id );
-            a.sub_services.forEach( ss => { ss.id = parseInt( ss.id ) } );
+            a.sub_services.forEach( ss => { ss.id = Number( ss.id ); ss.mins = Number( ss.mins ); } );
             a.employee.id = parseInt( a.employee.id );
           } );
           return { ...state, loader: 0, appos: payload, appoReq: 1 };

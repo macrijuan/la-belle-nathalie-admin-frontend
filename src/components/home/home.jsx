@@ -17,6 +17,7 @@ const Home = () => {
   const user = useSelector( state => state.user );
   
   useEffect( () => {
+    console.log( user.email );
     if( !user.email ) dispatch( adminSignIn( { email:"amacri48@yahoo.com", password:"Password1?" } ) );
   }, [ user ] );
 
@@ -51,10 +52,10 @@ const Home = () => {
       <div style={{ marginTop: "1em" }}>
         <label className="Home-label">Click para cambiar la información del tablero:</label>
         <select onChange={ ( e ) => { setState( { ...state, board: e.target.value } ); } }>
+          <option value="appo" >turnos</option>
           <option value="emp" >empleados</option>
           <option value="sub_serv" >sub servicios</option>
           <option value="serv" >servicios</option>
-          <option value="appo" >turnos</option>
         </select>
       </div>
       <PostFormSelector state={ state } setState={ setState } />

@@ -88,3 +88,23 @@ export const employeeUpdate = ( inds, body ) => async dispatch => {
     dispatch( actioner( actions.PUT, actioner( actions.EMPLOYEE, _errs.unknown_server_format ) ) );
   };
 };
+
+export const appointmentUpdate = ( appoId, inds, body ) => async dispatch => {
+  //same inds and body workflow as serviceUpdate
+  try{
+    const res = await fetch(`${process.env.SERVER}/appointment/put_appointment/${appoId}`, config( store.getState().user.token, "PUT", body ) )
+    .catch( err => { console.log( err ); return 0; } );
+    if( res ){
+      if( res.ok ){
+        dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, { appoId, inds, body } ) ) )
+      }else{
+        const error = await res.json().catch( err => { console.log( err ); return _errs.unknown_server_format } );
+        dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, error ) ) );
+      };
+    }else{
+      dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, _errs.conn_server_format ) ) );
+    };
+  }catch( err ){
+    dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, _errs.unknown_server_format ) ) );
+  };
+};

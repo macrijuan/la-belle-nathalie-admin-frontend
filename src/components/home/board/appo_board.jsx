@@ -6,7 +6,7 @@ import { setProp } from "../../../redux/sync.js";
 import { getAppos } from "../../../redux/get.js";
 import { appoDel } from "../../../redux/delete.js";
 import Alert from "../../alert/alert.jsx";
-// import AppoUpdate from "../../update_form/appo_update.jsx";
+import AppoUpdate from "../../update_form/appo_update.jsx";
 import "./appo_board.css";
 
 const AppoBoard = () => {
@@ -61,15 +61,10 @@ const AppoBoard = () => {
     };
   };
 
-  const handleUpdateList = ( currentToAdd, ind ) => {
+  const handleUpdate = ( currentData, ind ) => {
+    //currentData=obj, ind=num
     if( !state.update ){
-      setState( { ...state, update: { currentData: [ currentToAdd ], inds: [ ind ], ids: [ currentToAdd.id ] } } );
-    }else{
-      setState( { ...state, update: {
-        currentData: [ ...state.update.currentData, currentToAdd ],
-        inds: [ ...state.update.inds, ind ],
-        ids: [ ...state.update.ids, currentToAdd.id ]
-      } } );
+      setState( { ...state, update: { currentData, ind, id: currentData.id } } );
     };
   };
 
@@ -82,7 +77,7 @@ const AppoBoard = () => {
   return(
     <div className="Home-board">
       <Alert accept={ () => { ; } } cancel={ () => { ; } } />
-      {/* <AppoUpdate state={ state } setState={ setState } /> */}
+      <AppoUpdate state={ state } setState={ setState } />
       {
         state.multipleDeletion
           ?<div className="ServBoard-selectedToDelete">
@@ -108,7 +103,7 @@ const AppoBoard = () => {
             return (
               <div key={ a.id } className="AppoBoard-row" style={{ backgroundColor: i%2 !== 0 ?"rgb( 239, 239, 239 )" :"rgb( 253, 172, 238 )" }}>
                 <div className="Home-row-buttons">
-                  <button onClick={ () => { handleUpdateList( a, i ); } }>actualizar</button>
+                  <button onClick={ () => { handleUpdate( a, i ); } }>actualizar</button>
                   <button onClick={ () => { if( state.multipleDeletion ) handleMultipleDeletionList( a.id, i, a.start_time ); else handleDelete( a.id, i ); } }>eliminar</button>
                 </div>
                 <h4>{ a.day }</h4>
