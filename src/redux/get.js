@@ -8,12 +8,15 @@ export const getServs = () => async ( dispatch, getState ) => {
     if( res ){
       const servs = await res.json();
       dispatch( actioner( actions.GET, actioner( actions.SERVICE, servs ) ) );
+      return servs;
     }else{
       dispatch( actioner( actions.GET, actioner( actions.SERVICE, errs.conn_server_format ) ) );
     };
+    return 0;
   }catch( err ){
     console.error( err );
     dispatch( actioner( actions.GET, actioner( actions.SERVICE, errs.unknown_server_format ) ) );
+    return 0;
   };
 };
 

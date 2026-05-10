@@ -16,7 +16,6 @@ const AppoBoard = () => {
 
   useEffect( () => {
     if( user.email && !store.getState().appoReq ){
-      console.log( "entered in the useEffect" );
       dispatch( setProp( "loader", 1 ) );
       dispatch( getAppos() );
     };

@@ -51,6 +51,24 @@ function putReducer( state, { type, payload } ){
         };
       };
 
+      case actions.APPOINTMENT:{
+        if( !payload.errors ){
+          if( payload.indsToDel !== null ){
+            const remainingSubServs = [ ...state.appointments[ payload.appoInd ] ].sub_services;
+            payload.indsToDel.forEach( ind => {
+              remainingSubServs.splice( ind, 1 );
+            } );
+          };
+          if( payload.body.add ){
+
+          };
+          console.log( "u still gotta develop the appo update reducer case!!!!!!!!!!!!");
+          return state;
+        }else{
+          return { ...state, loader: 0, message: payload.errors };
+        };
+      };
+
       default:{
         console.log( payload );
         return state;

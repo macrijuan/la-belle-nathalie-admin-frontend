@@ -1,0 +1,40 @@
+.AppoUpdateForm{
+  width: 100%;
+  border: solid 0.2em black;
+  padding: 1em;
+}
+
+.AppoUpdateForm-noMarginTop{
+  margin-top: 0px;
+}
+
+.AppoUpdateForm-subServsContainer{
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.AppoUpdateForm-false{
+  box-sizing: border-box;
+  width: fit-content;
+  margin: 0.4em;
+  border-radius: 0.3em;
+  border: solid 0.1em black;
+  padding: 0.2rem;
+}
+
+.AppoUpdateForm-true{
+  box-sizing: border-box;
+  width: fit-content;
+  margin: 0.4em;
+  border-radius: 0.3em;
+  border: solid 0.1em black;
+  padding: 0.2rem;
+  background-color: pink;
+}
+
+.AppoUpdateForm .breakLine{
+  width: 100%;
+  margin-top: 0.6em;
+  border: solid 0.1em black;
+}
