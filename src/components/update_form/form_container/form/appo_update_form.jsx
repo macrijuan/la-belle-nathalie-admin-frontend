@@ -37,31 +37,37 @@ const AppoUpdateForm = ({ state, data }) => {
       };
       setFlag( !flag );
     },
-    update: ( add, del, indsToDel, selToAddObj, appoId, appoInd ) => {
+    update: async ( add, del, selToDelInds, selToAddObj, appoId, appoInd ) => {
       const body = {};
       if( add.size ) body.add = [ ...add ];
       if( del.size ){
-        if( indsToDel.size < 1 ){
+        if( selToDelInds.size < 1 ){
           console.error( 'NO selToDelInds size.' );
           return dispatch( setProp( "message", errs.unknown ) );
         };
         body.del = [ ...del ];
       };
-      if( body.add || body.del )
-      {
+      if( body.add || body.del ){
+        console.log( "____ REDUCER DATA ____" );
+        console.log( "appo index: ", state.update.ind );
+        console.log( "selToDelInds: ", selToDelInds.size ?[ ...selToDelInds ] :null );
+        console.log( "selToAddObj: ", selToAddObj.size ?[ ...selToAddObj.values() ] :null, );
+
+        console.log( "____ POST DATA ____" );
         console.log( "appoId: ", appoId );
-        console.log( "indsToDel: ", indsToDel.size ?[ ...indsToDel ] :null );
-        console.log( "selToAddObj: ", selToAddObj );
         console.log( "body: ", body );
-      }
-      //   dispatch( appointmentUpdate(
-      //   appoId,
-      //   state.update.ind,
-      //   indsToDel.size ?[ ...indsToDel ] :null,
-      //   selToAddObj,
-      //   body
-      // ) );
-      else dispatch( setProp( "message", errs.unknown ) );
+        console.log( "________ PROCESS DONE ________" );
+        dispatch( setProp( "loader", 1 ) );
+        const upd = await dispatch( appointmentUpdate(
+          appoId,
+          state.update.ind,
+          selToDelInds.size ?[ ...selToDelInds ] :null,
+          selToAddObj.size ?[ ...selToAddObj.values() ] :null,
+          body
+        ) );
+        
+        if( upd ) setFlag( !flag );
+      } else dispatch( setProp( "message", errs.unknown ) );
     }
   } );
 
@@ -133,7 +139,7 @@ const AppoUpdateForm = ({ state, data }) => {
       <button
         onClick={ () => {
           console.log( "submit executed" );
-          const { postData, postData, reducerData, reducerData } = selected.current;
+          const { postData, reducerData } = selected.current;
           selected.current.update( postData.selToAddIds, postData.selToDelIds, reducerData.selToDelInds, reducerData.selToAddObj, state.update.currentData.id, state.update.ind );
         } }
       >aplicar</button>

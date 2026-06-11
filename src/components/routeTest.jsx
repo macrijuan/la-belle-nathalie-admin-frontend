@@ -34,7 +34,7 @@ const routeTester = () => {
     try{
       console.log( "req sent" );
       const route1 = "/appointment/put_appointment/1";
-      const body1 = { service: 1, del: [ 2 ], add: [ 8 ] };
+      const body1 = { del: [ 2 ], add: [ 8 ] };
       const response1 = await fetch( `${ process.env.SERVER }${ route1 }`, config( user.token, "PUT", body1 ) );
       
       // const route2 = "/user/post_user/";

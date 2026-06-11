@@ -90,13 +90,14 @@ export const employeeUpdate = ( inds, body ) => async dispatch => {
 };
 
 export const appointmentUpdate = ( appoId, appoInd, indsToDel, subServsToAdd, body ) => async dispatch => {
-  //appoId & appoInd = num, indsToDel = arr( nums ), body = obj( key: [ ...nums ] )
+  //appoId & appoInd = num, indsToDel = arr( nums ), subServsToAdd = arr( obj( subServ ) ) , body = obj( key: [ ...nums ] )
   try{
     const res = await fetch(`${process.env.SERVER}/appointment/put_appointment/${appoId}`, config( store.getState().user.token, "PUT", body ) )
     .catch( err => { console.log( err ); return 0; } );
     if( res ){
       if( res.ok ){
-        dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, { appoId, appoInd, indsToDel, body } ) ) )
+        dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, { appoInd, indsToDel, subServsToAdd } ) ) );
+        return 1;
       }else{
         const error = await res.json().catch( err => { console.log( err ); return _errs.unknown_server_format } );
         dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, error ) ) );
@@ -104,7 +105,9 @@ export const appointmentUpdate = ( appoId, appoInd, indsToDel, subServsToAdd, bo
     }else{
       dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, _errs.conn_server_format ) ) );
     };
+    return 0;
   }catch( err ){
     dispatch( actioner( actions.PUT, actioner( actions.APPOINTMENT, _errs.unknown_server_format ) ) );
+    return 0;
   };
 };

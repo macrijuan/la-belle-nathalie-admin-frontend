@@ -53,17 +53,17 @@ function putReducer( state, { type, payload } ){
 
       case actions.APPOINTMENT:{
         if( !payload.errors ){
+          const appos = [ ...state.appos ];
+          let appoSubServs = [ ...appos[ payload.appoInd ].sub_services ];
           if( payload.indsToDel !== null ){
-            const remainingSubServs = [ ...state.appointments[ payload.appoInd ] ].sub_services;
-            payload.indsToDel.forEach( ind => {
-              remainingSubServs.splice( ind, 1 );
-            } );
+            payload.indsToDel.forEach( ind => appoSubServs[ ind ] =  0 );
+            appoSubServs = appoSubServs.filter( ss => ss !== 0 );
           };
-          if( payload.body.add ){
-
-          };
-          console.log( "u still gotta develop the appo update reducer case!!!!!!!!!!!!");
-          return state;
+          
+          if( payload.subServsToAdd !== null ) appoSubServs.push( ...payload.selToAddObj );
+          
+          appos[ payload.appoInd ].sub_services = appoSubServs;
+          return { ...state, loader: 0, appos: appos };
         }else{
           return { ...state, loader: 0, message: payload.errors };
         };
