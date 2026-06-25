@@ -25,7 +25,6 @@ const AppoUpdate = ({ state, setState }) => {
           <button className="ServUpdate-cancel" onClick={ () => { handleClose(); } }>cerrar</button>
           <div className="ServUpdate-form-container">
             <AppoCurData state={ state } />
-            {/* <AppoUpdateForm state={ state } selected={ selected } data={ data } /> */}
             <AppoUpdateForm state={ state } />
           </div>
         </div>

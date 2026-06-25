@@ -8,7 +8,7 @@ import { servIdVal } from "../../../../validations/appointment_val.js";
 import { errs } from "../../../../errors.js";
 import "./appo_update_form.css";
 
-const AppoUpdateForm = ({ state, data }) => {
+const AppoUpdateForm = ({ state }) => {
   console.log( "AppoUpdateForm rendered" );
 
   const dispatch = useDispatch();
@@ -38,36 +38,50 @@ const AppoUpdateForm = ({ state, data }) => {
       setFlag( !flag );
     },
     update: async ( add, del, selToDelInds, selToAddObj, appoId, appoInd ) => {
-      const body = {};
-      if( add.size ) body.add = [ ...add ];
-      if( del.size ){
-        if( selToDelInds.size < 1 ){
-          console.error( 'NO selToDelInds size.' );
-          return dispatch( setProp( "message", errs.unknown ) );
+      try{
+        const body = {};
+        if( add.size ) body.add = [ ...add ];
+        if( del.size ){
+          if( selToDelInds.size < 1 ){
+            console.error( 'NO selToDelInds size.' );
+            return dispatch( setProp( "message", errs.unknown ) );
+          };
+          body.del = [ ...del ];
         };
-        body.del = [ ...del ];
-      };
-      if( body.add || body.del ){
-        console.log( "____ REDUCER DATA ____" );
-        console.log( "appo index: ", state.update.ind );
-        console.log( "selToDelInds: ", selToDelInds.size ?[ ...selToDelInds ] :null );
-        console.log( "selToAddObj: ", selToAddObj.size ?[ ...selToAddObj.values() ] :null, );
 
-        console.log( "____ POST DATA ____" );
-        console.log( "appoId: ", appoId );
-        console.log( "body: ", body );
-        console.log( "________ PROCESS DONE ________" );
-        dispatch( setProp( "loader", 1 ) );
-        const upd = await dispatch( appointmentUpdate(
-          appoId,
-          state.update.ind,
-          selToDelInds.size ?[ ...selToDelInds ] :null,
-          selToAddObj.size ?[ ...selToAddObj.values() ] :null,
-          body
-        ) );
-        
-        if( upd ) setFlag( !flag );
-      } else dispatch( setProp( "message", errs.unknown ) );
+        if( "add" in body && "del" in body )
+        for( const id of body.add ){
+          if( body.del.includes( id ) ){
+            const duplicated = selToAddObj.get( id );
+            return dispatch( setProp( "message", { "sub servicio": `Se ha seleccionado un mismo sub servicio para eliminar y agregar a la vez (${duplicated.name }).` } ) );
+          };
+        };
+
+        if( "add" in body || "del" in body ){
+          console.log( "____ REDUCER DATA ____" );
+          console.log( "appo index: ", state.update.ind );
+          console.log( "selToDelInds: ", selToDelInds.size ?[ ...selToDelInds ] :null );
+          console.log( "selToAddObj: ", selToAddObj.size ?[ ...selToAddObj.values() ] :null, );
+
+          console.log( "____ POST DATA ____" );
+          console.log( "appoId: ", appoId );
+          console.log( "body: ", body );
+          console.log( "________ PROCESS DONE ________" );
+          dispatch( setProp( "loader", 1 ) );
+          const upd = await dispatch( appointmentUpdate(
+            appoId,
+            state.update.ind,
+            selToDelInds.size ?[ ...selToDelInds ] :null,
+            selToAddObj.size ?[ ...selToAddObj.values() ] :null,
+            body
+          ) );
+          
+          if( upd ) setFlag( !flag );
+        } else dispatch( setProp( "message", errs.unknown ) );
+      }catch( err ){
+        console.error( err );
+        dispatch( setProp( "message", errs.unknown ) );
+      };
     }
   } );
 
@@ -94,7 +108,7 @@ const AppoUpdateForm = ({ state, data }) => {
   return(
     <div className="AppoUpdateForm">
 
-      <h3 className="AppoUpdateForm-noMarginTop">Sub servicios asignados al turno</h3>
+      <h3 className="AppoUpdateForm-noMarginTop">Sub servicios para eliminar del turno</h3>
 
       <div className="AppoUpdateForm-subServsContainer">
         {
@@ -115,7 +129,7 @@ const AppoUpdateForm = ({ state, data }) => {
 
       <div className="breakLine"></div>
 
-      <h3>Sub servicios para agregar</h3>
+      <h3>Sub servicios para agregar al turno</h3>
 
       <div className="AppoUpdateForm-subServsContainer">
         {
